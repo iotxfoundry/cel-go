@@ -13,7 +13,7 @@ import (
 var doubleFunctions = []cel.EnvOption{
 	cel.Function(overloads.DoubleToBytes,
 		// double.to_bytes(int) -> bytes
-		cel.MemberOverload(overloads.DoubleToBytesInt64,
+		cel.MemberOverload(overloads.DoubleToBytesInt,
 			[]*cel.Type{cel.DoubleType, cel.IntType},
 			cel.BytesType,
 			cel.BinaryBinding(func(lhs, rhs ref.Val) ref.Val {

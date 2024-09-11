@@ -22,54 +22,91 @@ const (
 	BitwiseClearBytes = "bitwise_clear_bytes"
 
 	// BitwiseIndex 按位取bit
-	BitwiseIndex      = "bitwise_index"
-	BitwiseIndexInt64 = "bitwise_index_int64"
+	BitwiseIndex    = "bitwise_index"
+	BitwiseIndexInt = "bitwise_index_int"
 
 	// BitwiseShiftRight 按位右移
 	BitwiseShiftRight      = "bitwise_shr"
-	BitwiseShiftRightInt64 = "bitwise_shr_int64"
+	BitwiseShiftRightInt64 = "bitwise_shr_int"
 
 	// BitwiseShiftLeft 按位左移
 	BitwiseShiftLeft      = "bitwise_shl"
-	BitwiseShiftLeftInt64 = "bitwise_shl_int64"
+	BitwiseShiftLeftInt64 = "bitwise_shl_int"
 )
 
 // Bytes overloads
 const (
-	BytesIndex      = "index"
-	BytesIndexInt64 = "index_int64"
+	BytesIndex    = "index"
+	BytesIndexInt = "index_int"
 
-	BytesSwap           = "swap"
-	BytesSwapInt64Int64 = "swap_int64_int64"
+	BytesSwap       = "swap"
+	BytesSwapIntInt = "swap_int_int"
 
-	BytesDelete           = "delete"
-	BytesDeleteInt64      = "delete_int64"
-	BytesDeleteInt64Int64 = "delete_int64_int64"
+	BytesDelete       = "delete"
+	BytesDeleteInt    = "delete_int"
+	BytesDeleteIntInt = "delete_int_int"
 
-	BytesSlice           = "slice"
-	BytesSliceInt64Int64 = "slice_int64_int64"
+	BytesSlice       = "slice"
+	BytesSliceIntInt = "slice_int_int"
 
-	BytesToInt      = "toi"
-	BytesToIntInt64 = "toi_int64"
+	BytesToInt    = "toi"
+	BytesToIntInt = "toi_int"
 
-	BytesToUint      = "toui"
-	BytesToUintInt64 = "toui_int64"
+	BytesToUint    = "toui"
+	BytesToUintInt = "toui_int"
 
-	BytesToDouble      = "tof"
-	BytesToDoubleInt64 = "tof_int64"
+	BytesToDouble    = "tof"
+	BytesToDoubleInt = "tof_int"
 )
 
 const (
-	IntToBytes      = "to_bytes"
-	IntToBytesInt64 = "int64_to_bytes_int64"
+	IntToBytes    = "to_bytes"
+	IntToBytesInt = "int_to_bytes_int"
 )
 
 const (
-	UintToBytes      = "to_bytes"
-	UintToBytesInt64 = "uint64_to_bytes_int64"
+	UintToBytes    = "to_bytes"
+	UintToBytesInt = "uint_to_bytes_int"
 )
 
 const (
-	DoubleToBytes      = "to_bytes"
-	DoubleToBytesInt64 = "float64_to_bytes_int64"
+	DoubleToBytes    = "to_bytes"
+	DoubleToBytesInt = "float64_to_bytes_int"
+)
+
+const (
+	MathNamespace       = "math"
+	MathRandDoubleMicro = "randf"
+	MathRandIntMicro    = "randi"
+	MathRandUintMicro   = "randui"
+
+	MathRandDouble       = "math_randf"
+	MathRandDoubleNone   = "math_randf_none"
+	MathRandDoubleInt    = "math_randf_int"
+	MathRandDoubleUint   = "math_randf_uint"
+	MathRandDoubleDouble = "math_randf_double"
+
+	MathRandInt     = "math_randi"
+	MathRandIntNone = "math_randi_none"
+
+	MathRandIntInt       = "math_randi_int"
+	MathRandIntIntInt    = "math_randi_int_int"
+	MathRandIntIntUint   = "math_randi_int_uint"
+	MathRandIntIntDouble = "math_randi_int_double"
+
+	MathRandIntUint       = "math_randi_uint"
+	MathRandIntUintInt    = "math_randi_uint_int"
+	MathRandIntUintUint   = "math_randi_uint_uint"
+	MathRandIntUintDouble = "math_randi_uint_double"
+
+	MathRandIntDouble       = "math_randi_double"
+	MathRandIntDoubleInt    = "math_randi_double_int"
+	MathRandIntDoubleUint   = "math_randi_double_uint"
+	MathRandIntDoubleDouble = "math_randi_double_double"
+
+	MathRandUint       = "math_randui"
+	MathRandUintNone   = "math_randui_none"
+	MathRandUintInt    = "math_randui_int"
+	MathRandUintUint   = "math_randui_uint"
+	MathRandUintDouble = "math_randui_double"
 )

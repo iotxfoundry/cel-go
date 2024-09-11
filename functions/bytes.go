@@ -13,7 +13,7 @@ import (
 var bytesFunctions = []cel.EnvOption{
 	cel.Function(overloads.BytesToDouble,
 		// bytes.tof(int) -> int
-		cel.MemberOverload(overloads.BytesToDoubleInt64,
+		cel.MemberOverload(overloads.BytesToDoubleInt,
 			[]*cel.Type{cel.BytesType, cel.IntType},
 			cel.DoubleType,
 			cel.BinaryBinding(func(lhs, rhs ref.Val) ref.Val {
@@ -51,7 +51,7 @@ var bytesFunctions = []cel.EnvOption{
 	),
 	cel.Function(overloads.BytesToUint,
 		// bytes.toui(int) -> int
-		cel.MemberOverload(overloads.BytesToUintInt64,
+		cel.MemberOverload(overloads.BytesToUintInt,
 			[]*cel.Type{cel.BytesType, cel.IntType},
 			cel.UintType,
 			cel.BinaryBinding(func(lhs, rhs ref.Val) ref.Val {
@@ -93,7 +93,7 @@ var bytesFunctions = []cel.EnvOption{
 	),
 	cel.Function(overloads.BytesToInt,
 		// bytes.toi(int) -> bytes
-		cel.MemberOverload(overloads.BytesToIntInt64,
+		cel.MemberOverload(overloads.BytesToIntInt,
 			[]*cel.Type{cel.BytesType, cel.IntType},
 			cel.IntType,
 			cel.BinaryBinding(func(lhs, rhs ref.Val) ref.Val {
@@ -135,7 +135,7 @@ var bytesFunctions = []cel.EnvOption{
 	),
 	cel.Function(overloads.BytesSlice,
 		// bytes.slice(int, int) -> bytes
-		cel.MemberOverload(overloads.BytesSliceInt64Int64,
+		cel.MemberOverload(overloads.BytesSliceIntInt,
 			[]*cel.Type{cel.BytesType, cel.IntType, cel.IntType},
 			cel.BytesType,
 			cel.FunctionBinding(func(values ...ref.Val) ref.Val {
@@ -178,7 +178,7 @@ var bytesFunctions = []cel.EnvOption{
 	),
 	cel.Function(overloads.BytesDelete,
 		// bytes.delete(int, int) -> bytes
-		cel.MemberOverload(overloads.BytesDeleteInt64Int64,
+		cel.MemberOverload(overloads.BytesDeleteIntInt,
 			[]*cel.Type{cel.BytesType, cel.IntType, cel.IntType},
 			cel.BytesType,
 			cel.FunctionBinding(func(values ...ref.Val) ref.Val {
@@ -216,7 +216,7 @@ var bytesFunctions = []cel.EnvOption{
 			}),
 		),
 		// bytes.delete(int) -> bytes
-		cel.MemberOverload(overloads.BytesDeleteInt64,
+		cel.MemberOverload(overloads.BytesDeleteInt,
 			[]*cel.Type{cel.BytesType, cel.IntType},
 			cel.BytesType,
 			cel.BinaryBinding(func(lhs, rhs ref.Val) ref.Val {
@@ -241,7 +241,7 @@ var bytesFunctions = []cel.EnvOption{
 	),
 	cel.Function(overloads.BytesSwap,
 		// bytes.swap(int, int) -> bytes
-		cel.MemberOverload(overloads.BytesSwapInt64Int64,
+		cel.MemberOverload(overloads.BytesSwapIntInt,
 			[]*cel.Type{cel.BytesType, cel.IntType, cel.IntType},
 			cel.BytesType,
 			cel.FunctionBinding(func(values ...ref.Val) ref.Val {
@@ -273,7 +273,7 @@ var bytesFunctions = []cel.EnvOption{
 	),
 	cel.Function(overloads.BytesIndex,
 		// bytes.index(int) -> bytes
-		cel.MemberOverload(overloads.BytesIndexInt64,
+		cel.MemberOverload(overloads.BytesIndexInt,
 			[]*cel.Type{cel.BytesType, cel.IntType},
 			cel.BytesType,
 			cel.BinaryBinding(func(lhs, rhs ref.Val) ref.Val {

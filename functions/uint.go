@@ -12,7 +12,7 @@ import (
 var uintFunctions = []cel.EnvOption{
 	cel.Function(overloads.UintToBytes,
 		// uint.to_bytes(int) -> bytes
-		cel.MemberOverload(overloads.UintToBytesInt64,
+		cel.MemberOverload(overloads.UintToBytesInt,
 			[]*cel.Type{cel.UintType, cel.IntType},
 			cel.BytesType,
 			cel.BinaryBinding(func(lhs, rhs ref.Val) ref.Val {

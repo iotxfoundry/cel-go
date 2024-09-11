@@ -170,7 +170,7 @@ var bitwiseFunctions = []cel.EnvOption{
 
 	cel.Function(overloads.BitwiseIndex,
 		// bytes.bitwise_index(int) -> bytes
-		cel.MemberOverload(overloads.BitwiseIndexInt64,
+		cel.MemberOverload(overloads.BitwiseIndexInt,
 			[]*cel.Type{cel.BytesType, cel.IntType},
 			cel.BytesType,
 			cel.BinaryBinding(func(lhs, rhs ref.Val) ref.Val {

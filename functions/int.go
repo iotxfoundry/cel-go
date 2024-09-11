@@ -12,7 +12,7 @@ import (
 var intFunctions = []cel.EnvOption{
 	cel.Function(overloads.IntToBytes,
 		// int.to_bytes(int) -> bytes
-		cel.MemberOverload(overloads.IntToBytesInt64,
+		cel.MemberOverload(overloads.IntToBytesInt,
 			[]*cel.Type{cel.IntType, cel.IntType},
 			cel.BytesType,
 			cel.BinaryBinding(func(lhs, rhs ref.Val) ref.Val {
