@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/base64"
 	"encoding/binary"
+	"encoding/json"
 	"fmt"
 	"reflect"
 	"time"
@@ -12,7 +13,6 @@ import (
 	"github.com/google/cel-go/common/types"
 	"github.com/google/cel-go/common/types/ref"
 	"github.com/iotxfoundry/cel-go/functions"
-	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/types/known/anypb"
 	"google.golang.org/protobuf/types/known/structpb"
 )
@@ -94,7 +94,7 @@ func Val2Bytes(val ref.Val) (out []byte, err error) {
 		if err == nil {
 			anyVal, ok := t.(*structpb.Value)
 			if ok {
-				buff, err := protojson.Marshal(anyVal)
+				buff, err := json.Marshal(anyVal)
 				if err == nil {
 					_, err = buffer.Write(buff)
 					if err != nil {
@@ -110,7 +110,7 @@ func Val2Bytes(val ref.Val) (out []byte, err error) {
 		if err == nil {
 			anyVal, ok := t.(*structpb.Value)
 			if ok {
-				buff, err := protojson.Marshal(anyVal)
+				buff, err := json.Marshal(anyVal)
 				if err == nil {
 					_, err = buffer.Write(buff)
 					if err != nil {
@@ -127,7 +127,7 @@ func Val2Bytes(val ref.Val) (out []byte, err error) {
 	case "google.protobuf.Any":
 		t, ok := val.Value().(*anypb.Any)
 		if ok {
-			buff, err := protojson.Marshal(t)
+			buff, err := json.Marshal(t)
 			if err == nil {
 				_, err = buffer.Write(buff)
 				if err != nil {
@@ -199,7 +199,7 @@ func Val2String(val ref.Val) (out string, err error) {
 		if err == nil {
 			anyVal, ok := t.(*structpb.Value)
 			if ok {
-				buff, err := protojson.Marshal(anyVal)
+				buff, err := json.Marshal(anyVal)
 				if err == nil {
 					out = string(buff)
 				}
@@ -212,7 +212,7 @@ func Val2String(val ref.Val) (out string, err error) {
 		if err == nil {
 			anyVal, ok := t.(*structpb.Value)
 			if ok {
-				buff, err := protojson.Marshal(anyVal)
+				buff, err := json.Marshal(anyVal)
 				if err == nil {
 					out = string(buff)
 				}
@@ -226,7 +226,7 @@ func Val2String(val ref.Val) (out string, err error) {
 	case "google.protobuf.Any":
 		t, ok := val.Value().(*anypb.Any)
 		if ok {
-			buff, err := protojson.Marshal(t)
+			buff, err := json.Marshal(t)
 			if err == nil {
 				out = string(buff)
 			}
@@ -305,7 +305,7 @@ func Val2Pb(val ref.Val) (out *structpb.Value, err error) {
 	case "google.protobuf.Any":
 		t, ok := val.Value().(*anypb.Any)
 		if ok {
-			buff, err := protojson.Marshal(t)
+			buff, err := json.Marshal(t)
 			if err == nil {
 				return structpb.NewValue(buff)
 			}
