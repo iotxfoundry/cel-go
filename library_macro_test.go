@@ -35,7 +35,7 @@ func TestMacro(tt *testing.T) {
 			out:    types.Bool(true),
 		},
 		"filter": {
-			source: `[-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0, 1, 2, 3].filter(x, x > 0)`,
+			source: `[-1, 0, 1, 2, 3].filter(x, x > 0)`,
 			out:    types.NewDynamicList(reg, []int{1, 2, 3}),
 		},
 		"has": {
@@ -44,6 +44,10 @@ func TestMacro(tt *testing.T) {
 		},
 		"map": {
 			source: `[1, 2, 3].map(x, x * 2)`,
+			out:    types.NewDynamicList(reg, []int{2, 4, 6}),
+		},
+		"map2": {
+			source: `[-1, 0, 1, 2, 3].map(x, x > 0, x * 2)`,
 			out:    types.NewDynamicList(reg, []int{2, 4, 6}),
 		},
 	}
@@ -75,7 +79,7 @@ func TestMacro(tt *testing.T) {
 				t.FailNow()
 			}
 
-			t.Logf("%s -> %v", v.source, out.Value())
+			tt.Logf("%s -> %v", v.source, out.Value())
 			if !out.Equal(v.out).(types.Bool) {
 				t.FailNow()
 			}
