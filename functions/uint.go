@@ -12,11 +12,21 @@ import (
 var uintFunctions = []cel.EnvOption{
 	cel.Function(
 		overloads.UintToBytes,
+		cel.FunctionDocs(
+			"Converts a uint to a bytes representation.",
+		),
 		// uint.to_bytes(int) -> bytes
 		cel.MemberOverload(
 			overloads.UintToBytesInt,
 			[]*cel.Type{cel.UintType, cel.IntType},
 			cel.BytesType,
+			cel.OverloadExamples(
+				`42.to_bytes(8) // b"\x2a"`,
+				`42.to_bytes(16) // b"\x00\x2a"`,
+				`42.to_bytes(32) // b"\x00\x00\x00\x2a"`,
+				`42.to_bytes(64) // b"\x00\x00\x00\x00\x00\x00\x00\x2a"`,
+				`42.to_bytes(128) // error: base '128' out of uint8, uint16, uint32, uint64 size`,
+			),
 			cel.BinaryBinding(
 				func(lhs, rhs ref.Val) ref.Val {
 					in, ok := lhs.(types.Uint)

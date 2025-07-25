@@ -10,11 +10,19 @@ import (
 var bitwiseFunctions = []cel.EnvOption{
 	cel.Function(
 		overloads.BitwiseShiftRight,
+		cel.FunctionDocs(
+			"Performs a bitwise right shift on the bytes, shifting the bits to the right by the specified number of positions. "+
+				"Negative values shift to the left, and positive values shift to the right. "+
+				"Bits that are shifted out of the byte are discarded, and new bits are filled with zeros.",
+		),
 		// bytes.bitwise_shr(int) -> bytes
 		cel.MemberOverload(
 			overloads.BitwiseShiftRightInt64,
 			[]*cel.Type{cel.BytesType, cel.IntType},
 			cel.BytesType,
+			cel.OverloadExamples(
+				`b"\xf0".bitwise_shr(4) // b"\x0f"`,
+			),
 			cel.BinaryBinding(
 				func(lhs, rhs ref.Val) ref.Val {
 					data, ok := lhs.(types.Bytes)
@@ -46,11 +54,19 @@ var bitwiseFunctions = []cel.EnvOption{
 
 	cel.Function(
 		overloads.BitwiseShiftLeft,
+		cel.FunctionDocs(
+			"Performs a bitwise left shift on the bytes, shifting the bits to the left by the specified number of positions. "+
+				"Negative values shift to the right, and positive values shift to the left. "+
+				"Bits that are shifted out of the byte are discarded, and new bits are filled with zeros.",
+		),
 		// bytes.bitwise_shl(int) -> bytes
 		cel.MemberOverload(
 			overloads.BitwiseShiftLeftInt64,
 			[]*cel.Type{cel.BytesType, cel.IntType},
 			cel.BytesType,
+			cel.OverloadExamples(
+				`b"\xf0".bitwise_shl(4) // b"\x00"`,
+			),
 			cel.BinaryBinding(
 				func(lhs, rhs ref.Val) ref.Val {
 					data, ok := lhs.(types.Bytes)
@@ -82,11 +98,18 @@ var bitwiseFunctions = []cel.EnvOption{
 
 	cel.Function(
 		overloads.BitwiseAnd,
+		cel.FunctionDocs(
+			"Performs a bitwise AND operation on the bytes, combining the bits of two byte sequences. "+
+				"Each bit in the result is set to 1 if both corresponding bits in the input bytes are 1, otherwise it is set to 0.",
+		),
 		// bytes.bitwise_and(bytes) -> bytes
 		cel.MemberOverload(
 			overloads.BitwiseAndBytes,
 			[]*cel.Type{cel.BytesType, cel.BytesType},
 			cel.BytesType,
+			cel.OverloadExamples(
+				`b"\xff".bitwise_and(b"\x0f") // b"\x0f"`,
+			),
 			cel.BinaryBinding(
 				func(lhs, rhs ref.Val) ref.Val {
 					buff, ok := lhs.(types.Bytes)
@@ -111,11 +134,18 @@ var bitwiseFunctions = []cel.EnvOption{
 
 	cel.Function(
 		overloads.BitwiseOr,
+		cel.FunctionDocs(
+			"Performs a bitwise OR operation on the bytes, combining the bits of two byte sequences. "+
+				"Each bit in the result is set to 1 if at least one of the corresponding bits in the input bytes is 1, otherwise it is set to 0.",
+		),
 		// bytes.bitwise_or(bytes) -> bytes
 		cel.MemberOverload(
 			overloads.BitwiseOrBytes,
 			[]*cel.Type{cel.BytesType, cel.BytesType},
 			cel.BytesType,
+			cel.OverloadExamples(
+				`b"\x0f".bitwise_or(b"\xf0") // b"\xff"`,
+			),
 			cel.BinaryBinding(
 				func(lhs, rhs ref.Val) ref.Val {
 					buff, ok := lhs.(types.Bytes)
@@ -140,11 +170,18 @@ var bitwiseFunctions = []cel.EnvOption{
 
 	cel.Function(
 		overloads.BitwiseXor,
+		cel.FunctionDocs(
+			"Performs a bitwise XOR operation on the bytes, combining the bits of two byte sequences. "+
+				"Each bit in the result is set to 1 if the corresponding bits in the input bytes are different, otherwise it is set to 0.",
+		),
 		// bytes.bitwise_xor(bytes) -> bytes
 		cel.MemberOverload(
 			overloads.BitwiseXorBytes,
 			[]*cel.Type{cel.BytesType, cel.BytesType},
 			cel.BytesType,
+			cel.OverloadExamples(
+				`b"\x0f".bitwise_xor(b"\xf0") // b"\xff"`,
+			),
 			cel.BinaryBinding(
 				func(lhs, rhs ref.Val) ref.Val {
 					buff, ok := lhs.(types.Bytes)
@@ -169,11 +206,18 @@ var bitwiseFunctions = []cel.EnvOption{
 
 	cel.Function(
 		overloads.BitwiseClear,
+		cel.FunctionDocs(
+			"Performs a bitwise clear operation on the bytes, clearing the bits of the first byte sequence where the second byte sequence has bits set to 1. "+
+				"Each bit in the result is set to 0 if the corresponding bit in the second byte sequence is 1, otherwise it retains the value from the first byte sequence.",
+		),
 		// bytes.bitwise_clear(bytes) -> bytes
 		cel.MemberOverload(
 			overloads.BitwiseClearBytes,
 			[]*cel.Type{cel.BytesType, cel.BytesType},
 			cel.BytesType,
+			cel.OverloadExamples(
+				`b"\xff".bitwise_clear(b"\x0f") // b"\xf0"`,
+			),
 			cel.BinaryBinding(
 				func(lhs, rhs ref.Val) ref.Val {
 					buff, ok := lhs.(types.Bytes)
@@ -198,11 +242,19 @@ var bitwiseFunctions = []cel.EnvOption{
 
 	cel.Function(
 		overloads.BitwiseIndex,
+		cel.FunctionDocs(
+			"Returns the bit at the specified index in the byte sequence. "+
+				"The index is zero-based, and the bits are counted from the least significant bit (rightmost) to the most significant bit (leftmost). "+
+				"If the index is out of range, an error is returned.",
+		),
 		// bytes.bitwise_index(int) -> bytes
 		cel.MemberOverload(
 			overloads.BitwiseIndexInt,
 			[]*cel.Type{cel.BytesType, cel.IntType},
 			cel.BytesType,
+			cel.OverloadExamples(
+				`b"\x0f".bitwise_index(3) // b"\x01"`,
+			),
 			cel.BinaryBinding(
 				func(lhs, rhs ref.Val) ref.Val {
 					buff, ok := lhs.(types.Bytes)

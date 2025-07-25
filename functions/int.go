@@ -12,11 +12,24 @@ import (
 var intFunctions = []cel.EnvOption{
 	cel.Function(
 		overloads.IntToBytes,
+		cel.FunctionDocs(
+			"Converts an integer value to a byte sequence. "+
+				"The size of the byte sequence depends on the specified base. "+
+				"Valid bases are 8, 16, 32, and 64, corresponding to int8, int16, int32, and int64 types, respectively. "+
+				"If the base is not 8, 16, 32, or 64, an error is returned.",
+		),
 		// int.to_bytes(int) -> bytes
 		cel.MemberOverload(
 			overloads.IntToBytesInt,
 			[]*cel.Type{cel.IntType, cel.IntType},
 			cel.BytesType,
+			cel.OverloadExamples(
+				`42.to_bytes(8) // b"\x2a"`,
+				`42.to_bytes(16) // b"\x00\x2a"`,
+				`42.to_bytes(32) // b"\x00\x00\x00\x2a"`,
+				`42.to_bytes(64) // b"\x00\x00\x00\x00\x00\x00\x00\x2a"`,
+				`42.to_bytes(128) // error: base '128' out of int8, int16, int32, int64 size`,
+			),
 			cel.BinaryBinding(
 				func(lhs, rhs ref.Val) ref.Val {
 					in, ok := lhs.(types.Int)

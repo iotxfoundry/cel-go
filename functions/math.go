@@ -42,11 +42,18 @@ var randFunctions = []cel.EnvOption{
 	),
 	cel.Function(
 		overloads.MathRandDouble,
+		cel.FunctionDocs(
+			"Generates a random double-precision floating-point number. "+
+				"The result is in the range [0, 1) for float32 and float64 types.",
+		),
 		// math.randf() -> double
 		cel.Overload(
 			overloads.MathRandDoubleNone,
 			[]*cel.Type{},
 			cel.DoubleType,
+			cel.OverloadExamples(
+				`math.randf() // [0.0, 1.0) float64`,
+			),
 			cel.FunctionBinding(
 				func(values ...ref.Val) ref.Val {
 					if len(values) != 0 {
@@ -61,6 +68,10 @@ var randFunctions = []cel.EnvOption{
 			overloads.MathRandDoubleInt,
 			[]*cel.Type{cel.IntType},
 			cel.DoubleType,
+			cel.OverloadExamples(
+				`math.randf(32) // [0.0, 1.0) float32`,
+				`math.randf(64) // [0.0, 1.0) float64`,
+			),
 			cel.UnaryBinding(
 				func(value ref.Val) ref.Val {
 					base, ok := value.(types.Int)
@@ -85,6 +96,10 @@ var randFunctions = []cel.EnvOption{
 			overloads.MathRandDoubleUint,
 			[]*cel.Type{cel.UintType},
 			cel.DoubleType,
+			cel.OverloadExamples(
+				`math.randf(32) // [0.0, 1.0) float32`,
+				`math.randf(64) // [0.0, 1.0) float64`,
+			),
 			cel.UnaryBinding(
 				func(value ref.Val) ref.Val {
 					base, ok := value.(types.Uint)
@@ -109,6 +124,10 @@ var randFunctions = []cel.EnvOption{
 			overloads.MathRandDoubleDouble,
 			[]*cel.Type{cel.DoubleType},
 			cel.DoubleType,
+			cel.OverloadExamples(
+				`math.randf(32) // [0.0, 1.0) float32`,
+				`math.randf(64) // [0.0, 1.0) float64`,
+			),
 			cel.UnaryBinding(
 				func(value ref.Val) ref.Val {
 					base, ok := value.(types.Double)
@@ -131,11 +150,18 @@ var randFunctions = []cel.EnvOption{
 	),
 	cel.Function(
 		overloads.MathRandInt,
+		cel.FunctionDocs(
+			"Generates a random integer. "+
+				"The result is in the range [0, MaxInt32] for int32 and [0, MaxInt64] for int64 types.",
+		),
 		// math.randi() -> int
 		cel.Overload(
 			overloads.MathRandIntNone,
 			[]*cel.Type{},
 			cel.IntType,
+			cel.OverloadExamples(
+				`math.randi() // [0, MaxInt64]`,
+			),
 			cel.FunctionBinding(
 				func(values ...ref.Val) ref.Val {
 					if len(values) != 0 {
@@ -150,6 +176,10 @@ var randFunctions = []cel.EnvOption{
 			overloads.MathRandIntInt,
 			[]*cel.Type{cel.IntType},
 			cel.IntType,
+			cel.OverloadExamples(
+				`math.randi(32) // [0, MaxInt32]`,
+				`math.randi(64) // [0, MaxInt64]`,
+			),
 			cel.UnaryBinding(
 				func(value ref.Val) ref.Val {
 					base, ok := value.(types.Int)
@@ -174,6 +204,10 @@ var randFunctions = []cel.EnvOption{
 			overloads.MathRandIntIntInt,
 			[]*cel.Type{cel.IntType, cel.IntType},
 			cel.IntType,
+			cel.OverloadExamples(
+				`math.randi(32, 64) // [0, 64)`,
+				`math.randi(64, 128) // [0, 128)`,
+			),
 			cel.BinaryBinding(
 				func(lhs ref.Val, rhs ref.Val) ref.Val {
 					base, ok := lhs.(types.Int)
@@ -202,6 +236,10 @@ var randFunctions = []cel.EnvOption{
 			overloads.MathRandIntIntUint,
 			[]*cel.Type{cel.IntType, cel.UintType},
 			cel.IntType,
+			cel.OverloadExamples(
+				`math.randi(32, 64) // [0, 64)`,
+				`math.randi(64, 128) // [0, 128)`,
+			),
 			cel.BinaryBinding(
 				func(lhs ref.Val, rhs ref.Val) ref.Val {
 					base, ok := lhs.(types.Int)
@@ -230,6 +268,10 @@ var randFunctions = []cel.EnvOption{
 			overloads.MathRandIntIntDouble,
 			[]*cel.Type{cel.IntType, cel.DoubleType},
 			cel.IntType,
+			cel.OverloadExamples(
+				`math.randi(32, 64) // [0, 64)`,
+				`math.randi(64, 128) // [0, 128)`,
+			),
 			cel.BinaryBinding(
 				func(lhs ref.Val, rhs ref.Val) ref.Val {
 					base, ok := lhs.(types.Int)
@@ -258,6 +300,10 @@ var randFunctions = []cel.EnvOption{
 			overloads.MathRandIntUint,
 			[]*cel.Type{cel.UintType},
 			cel.IntType,
+			cel.OverloadExamples(
+				`math.randi(32) // [0, MaxInt32]`,
+				`math.randi(64) // [0, MaxInt64]`,
+			),
 			cel.UnaryBinding(
 				func(value ref.Val) ref.Val {
 					base, ok := value.(types.Uint)
@@ -283,6 +329,10 @@ var randFunctions = []cel.EnvOption{
 			overloads.MathRandIntUintInt,
 			[]*cel.Type{cel.UintType, cel.IntType},
 			cel.IntType,
+			cel.OverloadExamples(
+				`math.randi(32, 64) // [0, 64)`,
+				`math.randi(64, 128) // [0, 128)`,
+			),
 			cel.BinaryBinding(
 				func(lhs ref.Val, rhs ref.Val) ref.Val {
 					base, ok := lhs.(types.Uint)
@@ -311,6 +361,10 @@ var randFunctions = []cel.EnvOption{
 			overloads.MathRandIntUintUint,
 			[]*cel.Type{cel.UintType, cel.UintType},
 			cel.IntType,
+			cel.OverloadExamples(
+				`math.randi(32, 64) // [0, 64)`,
+				`math.randi(64, 128) // [0, 128)`,
+			),
 			cel.BinaryBinding(
 				func(lhs ref.Val, rhs ref.Val) ref.Val {
 					base, ok := lhs.(types.Uint)
@@ -339,6 +393,10 @@ var randFunctions = []cel.EnvOption{
 			overloads.MathRandIntUintDouble,
 			[]*cel.Type{cel.UintType, cel.DoubleType},
 			cel.IntType,
+			cel.OverloadExamples(
+				`math.randi(32, 64) // [0, 64)`,
+				`math.randi(64, 128) // [0, 128)`,
+			),
 			cel.BinaryBinding(
 				func(lhs ref.Val, rhs ref.Val) ref.Val {
 					base, ok := lhs.(types.Uint)
@@ -368,6 +426,10 @@ var randFunctions = []cel.EnvOption{
 			overloads.MathRandIntDouble,
 			[]*cel.Type{cel.DoubleType},
 			cel.IntType,
+			cel.OverloadExamples(
+				`math.randi(32) // [0, MaxInt32]`,
+				`math.randi(64) // [0, MaxInt64]`,
+			),
 			cel.UnaryBinding(
 				func(value ref.Val) ref.Val {
 					base, ok := value.(types.Double)
@@ -393,6 +455,10 @@ var randFunctions = []cel.EnvOption{
 			overloads.MathRandIntDoubleInt,
 			[]*cel.Type{cel.DoubleType, cel.IntType},
 			cel.IntType,
+			cel.OverloadExamples(
+				`math.randi(32, 64) // [0, 64)`,
+				`math.randi(64, 128) // [0, 128)`,
+			),
 			cel.BinaryBinding(
 				func(lhs ref.Val, rhs ref.Val) ref.Val {
 					base, ok := lhs.(types.Double)
@@ -421,6 +487,10 @@ var randFunctions = []cel.EnvOption{
 			overloads.MathRandIntDoubleUint,
 			[]*cel.Type{cel.DoubleType, cel.UintType},
 			cel.IntType,
+			cel.OverloadExamples(
+				`math.randi(32, 64) // [0, 64)`,
+				`math.randi(64, 128) // [0, 128)`,
+			),
 			cel.BinaryBinding(
 				func(lhs ref.Val, rhs ref.Val) ref.Val {
 					base, ok := lhs.(types.Double)
@@ -449,6 +519,10 @@ var randFunctions = []cel.EnvOption{
 			overloads.MathRandIntDoubleDouble,
 			[]*cel.Type{cel.DoubleType, cel.DoubleType},
 			cel.IntType,
+			cel.OverloadExamples(
+				`math.randi(32, 64) // [0, 64)`,
+				`math.randi(64, 128) // [0, 128)`,
+			),
 			cel.BinaryBinding(
 				func(lhs ref.Val, rhs ref.Val) ref.Val {
 					base, ok := lhs.(types.Double)
@@ -475,11 +549,18 @@ var randFunctions = []cel.EnvOption{
 	),
 	cel.Function(
 		overloads.MathRandUint,
+		cel.FunctionDocs(
+			"Generates a random unsigned integer. "+
+				"The result is in the range [0, MaxUint32] for uint32 and [0, MaxUint64] for uint64 types.",
+		),
 		// math.randui() -> uint
 		cel.Overload(
 			overloads.MathRandUintNone,
 			[]*cel.Type{},
 			cel.UintType,
+			cel.OverloadExamples(
+				`math.randui() // [0, MaxUint64]`,
+			),
 			cel.FunctionBinding(
 				func(values ...ref.Val) ref.Val {
 					if len(values) != 0 {
@@ -494,6 +575,10 @@ var randFunctions = []cel.EnvOption{
 			overloads.MathRandUintInt,
 			[]*cel.Type{cel.IntType},
 			cel.UintType,
+			cel.OverloadExamples(
+				`math.randui(32) // [0, MaxUint32]`,
+				`math.randui(64) // [0, MaxUint64]`,
+			),
 			cel.UnaryBinding(
 				func(value ref.Val) ref.Val {
 					base, ok := value.(types.Int)
@@ -518,6 +603,10 @@ var randFunctions = []cel.EnvOption{
 			overloads.MathRandUintUint,
 			[]*cel.Type{cel.UintType},
 			cel.UintType,
+			cel.OverloadExamples(
+				`math.randui(32) // [0, MaxUint32]`,
+				`math.randui(64) // [0, MaxUint64]`,
+			),
 			cel.UnaryBinding(
 				func(value ref.Val) ref.Val {
 					base, ok := value.(types.Uint)
@@ -543,6 +632,10 @@ var randFunctions = []cel.EnvOption{
 			overloads.MathRandUintDouble,
 			[]*cel.Type{cel.DoubleType},
 			cel.UintType,
+			cel.OverloadExamples(
+				`math.randui(32) // [0, MaxUint32]`,
+				`math.randui(64) // [0, MaxUint64]`,
+			),
 			cel.UnaryBinding(
 				func(value ref.Val) ref.Val {
 					base, ok := value.(types.Double)
