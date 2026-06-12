@@ -10,6 +10,7 @@ func Functions() (fns []cel.EnvOption) {
 	fns = append(fns, intFunctions...)
 	fns = append(fns, uintFunctions...)
 	fns = append(fns, doubleFunctions...)
+	fns = append(fns, arithmeticFunctions...)
 	fns = append(fns, randFunctions...)
 	return fns
 }
