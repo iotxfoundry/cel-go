@@ -25,7 +25,7 @@ var bitwiseFunctions = []cel.EnvOption{
 			),
 			cel.BinaryBinding(
 				func(lhs, rhs ref.Val) ref.Val {
-					data, ok := lhs.(types.Bytes)
+					src, ok := lhs.(types.Bytes)
 					if !ok {
 						return types.ValOrErr(lhs, "no such overload")
 					}
@@ -33,6 +33,8 @@ var bitwiseFunctions = []cel.EnvOption{
 					if !ok {
 						return types.ValOrErr(rhs, "no such overload")
 					}
+					data := make([]byte, len(src))
+					copy(data, src)
 					n := len(data)
 					if bits < 0 {
 						bits = -bits
@@ -46,7 +48,7 @@ var bitwiseFunctions = []cel.EnvOption{
 						}
 						data[0] >>= bits
 					}
-					return data
+					return types.Bytes(data)
 				},
 			),
 		),
@@ -69,7 +71,7 @@ var bitwiseFunctions = []cel.EnvOption{
 			),
 			cel.BinaryBinding(
 				func(lhs, rhs ref.Val) ref.Val {
-					data, ok := lhs.(types.Bytes)
+					src, ok := lhs.(types.Bytes)
 					if !ok {
 						return types.ValOrErr(lhs, "no such overload")
 					}
@@ -77,6 +79,8 @@ var bitwiseFunctions = []cel.EnvOption{
 					if !ok {
 						return types.ValOrErr(rhs, "no such overload")
 					}
+					data := make([]byte, len(src))
+					copy(data, src)
 					n := len(data)
 					if bits < 0 {
 						bits = -bits
@@ -90,7 +94,7 @@ var bitwiseFunctions = []cel.EnvOption{
 						}
 						data[n-1] <<= bits
 					}
-					return data
+					return types.Bytes(data)
 				},
 			),
 		),
@@ -112,7 +116,7 @@ var bitwiseFunctions = []cel.EnvOption{
 			),
 			cel.BinaryBinding(
 				func(lhs, rhs ref.Val) ref.Val {
-					buff, ok := lhs.(types.Bytes)
+					src, ok := lhs.(types.Bytes)
 					if !ok {
 						return types.ValOrErr(lhs, "no such overload")
 					}
@@ -120,13 +124,15 @@ var bitwiseFunctions = []cel.EnvOption{
 					if !ok {
 						return types.ValOrErr(rhs, "no such overload")
 					}
+					buff := make([]byte, len(src))
+					copy(buff, src)
 					for k := range buff {
 						if k >= len(temp) {
 							break
 						}
 						buff[k] &= temp[k]
 					}
-					return buff
+					return types.Bytes(buff)
 				},
 			),
 		),
@@ -148,7 +154,7 @@ var bitwiseFunctions = []cel.EnvOption{
 			),
 			cel.BinaryBinding(
 				func(lhs, rhs ref.Val) ref.Val {
-					buff, ok := lhs.(types.Bytes)
+					src, ok := lhs.(types.Bytes)
 					if !ok {
 						return types.ValOrErr(lhs, "no such overload")
 					}
@@ -156,13 +162,15 @@ var bitwiseFunctions = []cel.EnvOption{
 					if !ok {
 						return types.ValOrErr(rhs, "no such overload")
 					}
+					buff := make([]byte, len(src))
+					copy(buff, src)
 					for k := range buff {
 						if k >= len(temp) {
 							break
 						}
 						buff[k] |= temp[k]
 					}
-					return buff
+					return types.Bytes(buff)
 				},
 			),
 		),
@@ -184,7 +192,7 @@ var bitwiseFunctions = []cel.EnvOption{
 			),
 			cel.BinaryBinding(
 				func(lhs, rhs ref.Val) ref.Val {
-					buff, ok := lhs.(types.Bytes)
+					src, ok := lhs.(types.Bytes)
 					if !ok {
 						return types.ValOrErr(lhs, "no such overload")
 					}
@@ -192,13 +200,15 @@ var bitwiseFunctions = []cel.EnvOption{
 					if !ok {
 						return types.ValOrErr(rhs, "no such overload")
 					}
+					buff := make([]byte, len(src))
+					copy(buff, src)
 					for k := range buff {
 						if k >= len(temp) {
 							break
 						}
 						buff[k] ^= temp[k]
 					}
-					return buff
+					return types.Bytes(buff)
 				},
 			),
 		),
@@ -220,7 +230,7 @@ var bitwiseFunctions = []cel.EnvOption{
 			),
 			cel.BinaryBinding(
 				func(lhs, rhs ref.Val) ref.Val {
-					buff, ok := lhs.(types.Bytes)
+					src, ok := lhs.(types.Bytes)
 					if !ok {
 						return types.ValOrErr(lhs, "no such overload")
 					}
@@ -228,13 +238,15 @@ var bitwiseFunctions = []cel.EnvOption{
 					if !ok {
 						return types.ValOrErr(rhs, "no such overload")
 					}
+					buff := make([]byte, len(src))
+					copy(buff, src)
 					for k := range buff {
 						if k >= len(temp) {
 							break
 						}
 						buff[k] &^= temp[k]
 					}
-					return buff
+					return types.Bytes(buff)
 				},
 			),
 		),

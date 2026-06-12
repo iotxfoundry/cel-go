@@ -17,7 +17,7 @@ func TestBytes2Double(tt *testing.T) {
 		"buff.tof(32)": {
 			buff:   []byte{0x43, 0xAC, 0x8F, 0x5C},
 			source: "buff.tof(32)",
-			result: 345.12,
+			result: 345.1199951171875, // float32 cannot represent 345.12 exactly
 		},
 		"buff.tof(64)": {
 			buff:   []byte{0x40, 0x75, 0x91, 0xEB, 0x85, 0x1E, 0xB8, 0x52},
@@ -58,6 +58,10 @@ func TestBytes2Double(tt *testing.T) {
 			}
 
 			t.Log(out, v.result)
+			if out.Value().(float64) != v.result {
+				t.Errorf("got %v, want %v", out.Value(), v.result)
+				t.FailNow()
+			}
 		})
 	}
 }
@@ -112,6 +116,10 @@ func TestDouble2Bytes(tt *testing.T) {
 			}
 
 			t.Log(out, v.result)
+			if !bytes.Equal(out.Value().([]byte), v.result) {
+				t.Errorf("got % 02X, want % 02X", out.Value(), v.result)
+				t.FailNow()
+			}
 		})
 	}
 }

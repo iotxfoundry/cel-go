@@ -669,9 +669,9 @@ func mathRandUint(meh cel.MacroExprFactory, target ast.Expr, args []ast.Expr) (a
 		if isValidArgType(args[0]) {
 			return meh.NewCall(overloads.MathRandUint, args[0]), nil
 		}
-		return nil, meh.NewError(args[0].ID(), "math.randi() invalid single argument value")
+		return nil, meh.NewError(args[0].ID(), "math.randui() invalid single argument value")
 	default:
-		return nil, meh.NewError(target.ID(), "math.randi() requires at zero or one argument")
+		return nil, meh.NewError(target.ID(), "math.randui() requires at zero or one argument")
 	}
 }
 

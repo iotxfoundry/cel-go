@@ -259,7 +259,7 @@ var bytesFunctions = []cel.EnvOption{
 					if len(values) != 3 {
 						return types.NewErr("values length not equal 3")
 					}
-					buff, ok := values[0].(types.Bytes)
+					src, ok := values[0].(types.Bytes)
 					if !ok {
 						return types.ValOrErr(values[0], "no such overload")
 					}
@@ -267,26 +267,28 @@ var bytesFunctions = []cel.EnvOption{
 					if !ok {
 						return types.ValOrErr(values[1], "no such overload")
 					}
-					if start < 0 || int(start) > len(buff) {
-						return types.NewErr("index '%d' out of range in bytes size '%d'", start, len(buff))
+					if start < 0 || int(start) > len(src) {
+						return types.NewErr("index '%d' out of range in bytes size '%d'", start, len(src))
 					}
 					end, ok := values[2].(types.Int)
 					if !ok {
 						return types.ValOrErr(values[2], "no such overload")
 					}
 					if end < 0 {
-						return types.NewErr("index '%d' out of range in bytes size '%d'", end, len(buff))
+						return types.NewErr("index '%d' out of range in bytes size '%d'", end, len(src))
 					}
 
-					if int(end) >= len(buff) {
-						end = types.Int(len(buff))
+					if int(end) >= len(src) {
+						end = types.Int(len(src))
 					}
 
 					if end < start {
 						start, end = end, start
 					}
+					buff := make([]byte, len(src))
+					copy(buff, src)
 					buff = append(buff[:start], buff[end:]...)
-					return buff
+					return types.Bytes(buff)
 				},
 			),
 		),
@@ -303,7 +305,7 @@ var bytesFunctions = []cel.EnvOption{
 			),
 			cel.BinaryBinding(
 				func(lhs, rhs ref.Val) ref.Val {
-					buff, ok := lhs.(types.Bytes)
+					src, ok := lhs.(types.Bytes)
 					if !ok {
 						return types.ValOrErr(lhs, "no such overload")
 					}
@@ -312,13 +314,15 @@ var bytesFunctions = []cel.EnvOption{
 						return types.ValOrErr(rhs, "no such overload")
 					}
 					if index < 0 {
-						return types.NewErr("index '%d' out of range in bytes size '%d'", index, len(buff))
+						return types.NewErr("index '%d' out of range in bytes size '%d'", index, len(src))
 					}
-					if int(index) >= len(buff) {
-						return buff
+					if int(index) >= len(src) {
+						return lhs
 					}
+					buff := make([]byte, len(src))
+					copy(buff, src)
 					buff = append(buff[:index], buff[index+1:]...)
-					return buff
+					return types.Bytes(buff)
 				},
 			),
 		),
@@ -346,7 +350,7 @@ var bytesFunctions = []cel.EnvOption{
 					if len(values) != 3 {
 						return types.NewErr("values length not equal 3")
 					}
-					buff, ok := values[0].(types.Bytes)
+					src, ok := values[0].(types.Bytes)
 					if !ok {
 						return types.ValOrErr(values[0], "no such overload")
 					}
@@ -354,18 +358,20 @@ var bytesFunctions = []cel.EnvOption{
 					if !ok {
 						return types.ValOrErr(values[1], "no such overload")
 					}
-					if before < 0 || int(before) >= len(buff) {
-						return types.NewErr("index '%d' out of range in bytes size '%d'", before, len(buff))
+					if before < 0 || int(before) >= len(src) {
+						return types.NewErr("index '%d' out of range in bytes size '%d'", before, len(src))
 					}
 					after, ok := values[2].(types.Int)
 					if !ok {
 						return types.ValOrErr(values[2], "no such overload")
 					}
-					if after < 0 || int(after) >= len(buff) {
-						return types.NewErr("index '%d' out of range in bytes size '%d'", after, len(buff))
+					if after < 0 || int(after) >= len(src) {
+						return types.NewErr("index '%d' out of range in bytes size '%d'", after, len(src))
 					}
+					buff := make([]byte, len(src))
+					copy(buff, src)
 					buff[before], buff[after] = buff[after], buff[before]
-					return buff
+					return types.Bytes(buff)
 				},
 			),
 		),
