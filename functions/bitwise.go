@@ -1,6 +1,8 @@
 package functions
 
 import (
+	"math/bits"
+
 	"github.com/google/cel-go/cel"
 	"github.com/google/cel-go/common/types"
 	"github.com/google/cel-go/common/types/ref"
@@ -293,6 +295,67 @@ var bitwiseFunctions = []cel.EnvOption{
 						}
 					}
 					return types.Bytes(ret)
+				},
+			),
+		),
+	),
+
+	cel.Function(
+		overloads.BitwiseNot,
+		cel.FunctionDocs(
+			"Performs a bitwise NOT (ones-complement) on each byte in the byte sequence. "+
+				"Each bit in the result is the inverse of the corresponding bit in the input.",
+		),
+		cel.MemberOverload(
+			overloads.BitwiseNotBytes,
+			[]*cel.Type{cel.BytesType},
+			cel.BytesType,
+			cel.OverloadExamples(
+				`b"\xf0".bitwise_not() // b"\x0f"`,
+				`b"\x00".bitwise_not() // b"\xff"`,
+			),
+			cel.UnaryBinding(
+				func(val ref.Val) ref.Val {
+					src, ok := val.(types.Bytes)
+					if !ok {
+						return types.ValOrErr(val, "no such overload")
+					}
+					buff := make([]byte, len(src))
+					copy(buff, src)
+					for i := range buff {
+						buff[i] = ^buff[i]
+					}
+					return types.Bytes(buff)
+				},
+			),
+		),
+	),
+
+	cel.Function(
+		overloads.BitwisePopcnt,
+		cel.FunctionDocs(
+			"Counts the number of bits set to 1 (population count) in the byte sequence. "+
+				"This is the sum of the popcount across all bytes.",
+		),
+		cel.MemberOverload(
+			overloads.BitwisePopcntBytes,
+			[]*cel.Type{cel.BytesType},
+			cel.IntType,
+			cel.OverloadExamples(
+				`b"\xf0".bitwise_popcnt() // 4`,
+				`b"\xff\x00".bitwise_popcnt() // 8`,
+			),
+			cel.UnaryBinding(
+				func(val ref.Val) ref.Val {
+					src, ok := val.(types.Bytes)
+					if !ok {
+						return types.ValOrErr(val, "no such overload")
+					}
+					var cnt int64
+					for _, b := range src {
+						cnt += int64(bits.OnesCount8(b))
+					}
+					return types.Int(cnt)
 				},
 			),
 		),

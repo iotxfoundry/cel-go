@@ -532,6 +532,21 @@ func TestBytes(tt *testing.T) {
 			source: `buff`,
 			result: []byte{0x01, 0x02, 0x03, 0x04, 0x05},
 		},
+		`buff.bitwise_not()`: {
+			buff:   []byte{0xF0},
+			source: `buff.bitwise_not()`,
+			result: []byte{0x0F},
+		},
+		`buff.bitwise_not_empty`: {
+			buff:   []byte{},
+			source: `buff.bitwise_not()`,
+			result: []byte{},
+		},
+		`buff.bitwise_not_multi`: {
+			buff:   []byte{0x00, 0xFF},
+			source: `buff.bitwise_not()`,
+			result: []byte{0xFF, 0x00},
+		},
 	}
 
 	env, err := cel.NewEnv(

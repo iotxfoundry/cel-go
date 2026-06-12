@@ -14,9 +14,6 @@ const (
 	BitwiseXor      = "bitwise_xor"
 	BitwiseXorBytes = "bitwise_xor_bytes"
 
-	// BitwiseNot 按位取反
-	BitwiseNot = "bitwise_not"
-
 	// BitwiseClear 按位清零
 	BitwiseClear      = "bitwise_clear"
 	BitwiseClearBytes = "bitwise_clear_bytes"
@@ -109,4 +106,70 @@ const (
 	MathRandUintInt    = "math_randui_int"
 	MathRandUintUint   = "math_randui_uint"
 	MathRandUintDouble = "math_randui_double"
+)
+
+// int bitwise overloads
+const (
+	// IntBitwiseAnd int 按位与 — function name is "bitwise_and" (same as bytes),
+	// overload ID is unique
+	IntBitwiseAndIntInt = "int_bitwise_and_int_int"
+
+	// IntBitwiseOr int 按位或
+	IntBitwiseOrIntInt = "int_bitwise_or_int_int"
+
+	// IntBitwiseXor int 按位异或
+	IntBitwiseXorIntInt = "int_bitwise_xor_int_int"
+
+	// IntBitwiseClear int 按位清零
+	IntBitwiseClearIntInt = "int_bitwise_clear_int_int"
+
+	// IntBitwiseShiftRight int 按位右移
+	IntBitwiseShiftRightIntInt = "int_bitwise_shr_int_int"
+
+	// IntBitwiseShiftLeft int 按位左移
+	IntBitwiseShiftLeftIntInt = "int_bitwise_shl_int_int"
+
+	// IntBitwiseNot int 按位取反 — function name is "bitwise_not" (same as bytes)
+	IntBitwiseNotInt = "int_bitwise_not_int"
+
+	// IntBitwiseIndex int 按位取bit — function name is "bitwise_index" (same as bytes)
+	IntBitwiseIndexIntInt = "int_bitwise_index_int_int"
+)
+
+// uint bitwise overloads
+const (
+	// UintBitwiseAnd uint 按位与 — function name is "bitwise_and" (same as bytes)
+	UintBitwiseAndUintUint = "uint_bitwise_and_uint_uint"
+
+	// UintBitwiseOr uint 按位或
+	UintBitwiseOrUintUint = "uint_bitwise_or_uint_uint"
+
+	// UintBitwiseXor uint 按位异或
+	UintBitwiseXorUintUint = "uint_bitwise_xor_uint_uint"
+
+	// UintBitwiseClear uint 按位清零
+	UintBitwiseClearUintUint = "uint_bitwise_clear_uint_uint"
+
+	// UintBitwiseShiftRight uint 按位右移
+	UintBitwiseShiftRightUintInt = "uint_bitwise_shr_uint_int"
+
+	// UintBitwiseShiftLeft uint 按位左移
+	UintBitwiseShiftLeftUintInt = "uint_bitwise_shl_uint_int"
+
+	// UintBitwiseNot uint 按位取反 — function name is "bitwise_not" (same as bytes)
+	UintBitwiseNotUint = "uint_bitwise_not_uint"
+
+	// UintBitwiseIndex uint 按位取bit — function name is "bitwise_index" (same as bytes)
+	UintBitwiseIndexUintInt = "uint_bitwise_index_uint_int"
+)
+
+// bytes bitwise unary and utility overloads
+const (
+	// BitwiseNot bytes 按位取反
+	BitwiseNot      = "bitwise_not"
+	BitwiseNotBytes = "bitwise_not_bytes"
+
+	// BitwisePopcnt bytes 统计置1位数
+	BitwisePopcnt      = "bitwise_popcnt"
+	BitwisePopcntBytes = "bitwise_popcnt_bytes"
 )
