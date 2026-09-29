@@ -3,7 +3,7 @@ module github.com/iotxfoundry/cel-go
 go 1.27.0
 
 require (
-	github.com/google/cel-go v0.31.0
+	cel.dev/cel-go v0.32.0
 	google.golang.org/protobuf v1.36.12
 )
 

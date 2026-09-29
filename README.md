@@ -1,6 +1,6 @@
 # cel-go
 
-Extended computation library for [google/cel-go](https://github.com/google/cel-go). Provides additional member functions for bytes, integer, and unsigned integer types, plus math random utilities and value conversion helpers.
+Extended computation library for [CEL](https://cel.dev) built on [cel-go](https://cel.dev/cel-go) (formerly [github.com/google/cel-go](https://github.com/google/cel-go)). Provides additional member functions for bytes, integer, and unsigned integer types, plus math random utilities and value conversion helpers.
 
 ## Documentation
 
@@ -22,7 +22,7 @@ go get github.com/iotxfoundry/cel-go
 
 ```go
 import (
-    "github.com/google/cel-go/cel"
+    "cel.dev/cel-go/cel"
     compute "github.com/iotxfoundry/cel-go"
 )
 

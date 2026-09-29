@@ -3,7 +3,7 @@ package functions
 import (
 	"testing"
 
-	"github.com/google/cel-go/cel"
+	"cel.dev/cel-go/cel"
 )
 
 // --- pure helper benchmarks ---

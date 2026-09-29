@@ -4,10 +4,10 @@ import (
 	"math"
 	"math/rand"
 
-	"github.com/google/cel-go/cel"
-	"github.com/google/cel-go/common/ast"
-	"github.com/google/cel-go/common/types"
-	"github.com/google/cel-go/common/types/ref"
+	"cel.dev/cel-go/cel"
+	"cel.dev/cel-go/common/ast"
+	"cel.dev/cel-go/common/types"
+	"cel.dev/cel-go/common/types/ref"
 	"github.com/iotxfoundry/cel-go/overloads"
 )
 

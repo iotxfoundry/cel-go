@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/google/cel-go/common/types"
-	"github.com/google/cel-go/common/types/ref"
+	"cel.dev/cel-go/common/types"
+	"cel.dev/cel-go/common/types/ref"
 	compute "github.com/iotxfoundry/cel-go"
 )
 

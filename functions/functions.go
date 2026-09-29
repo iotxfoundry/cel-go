@@ -1,6 +1,6 @@
 package functions
 
-import "github.com/google/cel-go/cel"
+import "cel.dev/cel-go/cel"
 
 // Functions returns the full set of CEL environment options provided by this
 // library: bytes utilities, bitwise operations for bytes/int/uint,

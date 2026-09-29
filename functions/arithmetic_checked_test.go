@@ -5,8 +5,8 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/google/cel-go/common/types"
-	"github.com/google/cel-go/common/types/ref"
+	"cel.dev/cel-go/common/types"
+	"cel.dev/cel-go/common/types/ref"
 )
 
 // boundary values for exhaustive cross-type arithmetic verification

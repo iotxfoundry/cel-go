@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/google/cel-go/common/types"
+	"cel.dev/cel-go/common/types"
 	compute "github.com/iotxfoundry/cel-go"
 )
 

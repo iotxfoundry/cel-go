@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/google/cel-go/cel"
+	"cel.dev/cel-go/cel"
 	compute "github.com/iotxfoundry/cel-go"
 )
 
