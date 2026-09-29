@@ -1,6 +1,6 @@
-# cel-go
+# iotxfoundry/cel-go
 
-Extended computation library for [CEL](https://cel.dev) built on [cel-go](https://cel.dev/cel-go) (formerly [github.com/google/cel-go](https://github.com/google/cel-go)). Provides additional member functions for bytes, integer, and unsigned integer types, plus math random utilities and value conversion helpers.
+Extended computation library for [CEL](https://cel.dev) built on [cel-go](https://cel.dev/cel-go) (formerly [github.com/google/cel-go](https://github.com/google/cel-go)). Provides additional member functions for bytes, integer, and unsigned integer types, cross-type arithmetic, bitwise operations, math random utilities, and value conversion helpers.
 
 ## Documentation
 
@@ -14,9 +14,13 @@ go generate ./...
 
 ## Installation
 
+Requires Go 1.27 or later.
+
 ```bash
 go get github.com/iotxfoundry/cel-go
 ```
+
+Dependencies: [cel.dev/cel-go](https://cel.dev/cel-go) v0.32.0 or compatible.
 
 ## Quick Start
 
@@ -26,14 +30,33 @@ import (
     compute "github.com/iotxfoundry/cel-go"
 )
 
-env, _ := cel.NewEnv(
+env, err := cel.NewEnv(
     cel.Variable("buff", cel.BytesType),
     compute.ComputeLib(),
 )
+if err != nil {
+    panic(err)
+}
 
-ast, _ := env.Compile(`buff.bitwise_and(b"\x01").bitwise_or(b"\xff")`)
-prg, _ := env.Program(ast)
-out, _, _ := prg.Eval(map[string]any{"buff": []byte{0x01, 0x02, 0x03}})
+ast, iss := env.Compile(`buff.bitwise_and(b"\x01").bitwise_or(b"\xff")`)
+if iss.Err() != nil {
+    panic(iss.Err())
+}
+prg, err := env.Program(ast)
+if err != nil {
+    panic(err)
+}
+out, _, err := prg.Eval(map[string]any{"buff": []byte{0x01, 0x02, 0x03}})
+if err != nil {
+    panic(err)
+}
+fmt.Println(out) // b"\xff\x02\x03"
+```
+
+`ComputeLib()` returns a `cel.Library` for use with `cel.NewEnv(cel.Lib(...))`. To append the individual environment options instead (e.g. into an existing option list), use `functions.Functions()`:
+
+```go
+opts := functions.Functions() // []cel.EnvOption
 ```
 
 ## Features
@@ -44,7 +67,7 @@ out, _, _ := prg.Eval(map[string]any{"buff": []byte{0x01, 0x02, 0x03}})
 
 | Function | Signature | Description |
 |----------|-----------|-------------|
-| `index(int)` | `bytes → bytes` | Returns the byte at the given index |
+| `index(int)` | `bytes → bytes` | Returns the byte at the given index (error if out of range) |
 | `slice(int, int)` | `bytes → bytes` | Returns a slice from start (inclusive) to end (exclusive) |
 | `delete(int)` | `bytes → bytes` | Deletes the byte at the given index |
 | `delete(int, int)` | `bytes → bytes` | Deletes a range from start to end |
@@ -61,16 +84,22 @@ out, _, _ := prg.Eval(map[string]any{"buff": []byte{0x01, 0x02, 0x03}})
 | `bitwise_shr(int)` | `bytes → bytes` | Bitwise right shift as unsigned big-endian integer (negative values shift left); any magnitude, zeros shifted in |
 | `bitwise_shl(int)` | `bytes → bytes` | Bitwise left shift as unsigned big-endian integer (negative values shift right); any magnitude, zeros shifted in |
 | `bitwise_not()` | `bytes → bytes` | Bitwise NOT (ones-complement) on each byte |
-| `bitwise_index(int)` | `bytes → bytes` | Returns a single-bit byte at the given bit index |
+| `bitwise_index(int)` | `bytes → bytes` | Returns a single-bit byte at the given bit index (0 to 8·len−1; error if out of range) |
 | `bitwise_popcnt()` | `bytes → int` | Population count (number of bits set to 1) |
+
+For `bitwise_and`/`or`/`xor`/`clear`, the result has the length of the left operand; bytes beyond the length of the right operand are unchanged.
 
 #### Bytes Conversion
 
+The `base` argument is the integer or float bit width of the conversion.
+
 | Function | Signature | Description |
 |----------|-----------|-------------|
-| `toi(int)` | `bytes → int` | Converts bytes to signed integer (base: 8/16/32/64) |
-| `toui(int)` | `bytes → uint` | Converts bytes to unsigned integer (base: 8/16/32/64) |
-| `tof(int)` | `bytes → double` | Converts bytes to floating-point (base: 32/64) |
+| `toi(int)` | `bytes → int` | Converts bytes to a signed big-endian integer (width: 8/16/32/64) |
+| `toui(int)` | `bytes → uint` | Converts bytes to an unsigned big-endian integer (width: 8/16/32/64) |
+| `tof(int)` | `bytes → double` | Converts bytes to a floating-point number (width: 32/64) |
+
+Invalid widths return a `base '<b>' out of ... size` evaluation error.
 
 ### Integer Member Functions
 
@@ -80,11 +109,11 @@ out, _, _ := prg.Eval(map[string]any{"buff": []byte{0x01, 0x02, 0x03}})
 | `bitwise_or(int)` | `int → int` | Bitwise OR |
 | `bitwise_xor(int)` | `int → int` | Bitwise XOR |
 | `bitwise_clear(int)` | `int → int` | Bitwise AND-NOT |
-| `bitwise_shr(int)` | `int → int` | Bitwise right shift (negative values shift left) |
-| `bitwise_shl(int)` | `int → int` | Bitwise left shift (negative values shift right) |
+| `bitwise_shr(int)` | `int → int` | Bitwise right shift (negative values shift left); 64-bit width, any magnitude is safe (Go full-width shift semantics) |
+| `bitwise_shl(int)` | `int → int` | Bitwise left shift (negative values shift right); 64-bit width, any magnitude is safe |
 | `bitwise_not()` | `int → int` | Bitwise NOT (ones-complement) |
-| `bitwise_index(int)` | `int → bytes` | Returns a single-bit byte at the given bit index |
-| `to_bytes(int)` | `int → bytes` | Converts int to bytes (base: 8/16/32/64) |
+| `bitwise_index(int)` | `int → bytes` | Returns a single-bit byte at the given bit index (0–63; error if out of range) |
+| `to_bytes(int)` | `int → bytes` | Serializes to a big-endian byte string (width: 8/16/32/64) |
 
 ### Unsigned Integer Member Functions
 
@@ -94,17 +123,17 @@ out, _, _ := prg.Eval(map[string]any{"buff": []byte{0x01, 0x02, 0x03}})
 | `bitwise_or(uint)` | `uint → uint` | Bitwise OR |
 | `bitwise_xor(uint)` | `uint → uint` | Bitwise XOR |
 | `bitwise_clear(uint)` | `uint → uint` | Bitwise AND-NOT |
-| `bitwise_shr(int)` | `uint → uint` | Bitwise right shift (negative values shift left) |
-| `bitwise_shl(int)` | `uint → uint` | Bitwise left shift (negative values shift right) |
+| `bitwise_shr(int)` | `uint → uint` | Bitwise right shift (negative values shift left); 64-bit width, any magnitude is safe |
+| `bitwise_shl(int)` | `uint → uint` | Bitwise left shift (negative values shift right); 64-bit width, any magnitude is safe |
 | `bitwise_not()` | `uint → uint` | Bitwise NOT (ones-complement) |
-| `bitwise_index(int)` | `uint → bytes` | Returns a single-bit byte at the given bit index |
-| `to_bytes(int)` | `uint → bytes` | Converts uint to bytes (base: 8/16/32/64) |
+| `bitwise_index(int)` | `uint → bytes` | Returns a single-bit byte at the given bit index (0–63; error if out of range) |
+| `to_bytes(int)` | `uint → bytes` | Serializes to a big-endian byte string (width: 8/16/32/64) |
 
 ### Double Member Functions
 
 | Function | Signature | Description |
 |----------|-----------|-------------|
-| `to_bytes(int)` | `double → bytes` | Converts double to bytes (base: 32/64) |
+| `to_bytes(int)` | `double → bytes` | Serializes the IEEE 754 value to bytes (width: 32/64) |
 
 ### Cross-Type Arithmetic Member Functions
 
@@ -222,6 +251,10 @@ b"\x01\x02\x03\x04\x05"
     .bitwise_shl(7)
     .bitwise_shr(7)  // b"\x01"
 
+// Bytes shifts operate on the whole sequence as a big-endian integer
+b"\xff\xff".bitwise_shr(8)   // b"\x00\xff"
+b"\x00\xff".bitwise_shl(8)   // b"\xff\x00"
+
 // Integer bitwise operations
 5.bitwise_and(3)     // 1
 5.bitwise_or(3)      // 7
@@ -238,7 +271,7 @@ b"\x01\x02\x03\x04".delete(1)    // b"\x01\x03\x04"
 b"\x01\x02\x03\x04".swap(1, 3)   // b"\x01\x04\x03\x02"
 b"\x01\x02\x03\x04".slice(1, 3)  // b"\x02\x03"
 
-// Type conversions
+// Type conversions (width argument in bits)
 42.to_bytes(8)      // b"\x2a"
 42u.to_bytes(16)    // b"\x00\x2a"
 3.14.to_bytes(32)   // b"\x40\x48\xf5\xc3"
@@ -255,4 +288,4 @@ math.randui(64)     // [0, MaxUint64] as uint64
 
 ## License
 
-Apache 2.0
+[MIT](LICENSE)
