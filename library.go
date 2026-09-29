@@ -90,7 +90,7 @@ func Val2Bytes(val ref.Val) (out []byte, err error) {
 			_, err = buffer.Write([]byte(t.Error()))
 		}
 	case types.ListType.TypeName():
-		t, err := val.ConvertToNative(reflect.TypeOf(&structpb.Value{}))
+		t, err := val.ConvertToNative(reflect.TypeFor[*structpb.Value]())
 		if err == nil {
 			anyVal, ok := t.(*structpb.Value)
 			if ok {
@@ -106,7 +106,7 @@ func Val2Bytes(val ref.Val) (out []byte, err error) {
 	case types.UnknownType.TypeName():
 		_, err = buffer.Write([]byte{})
 	case types.MapType.TypeName():
-		t, err := val.ConvertToNative(reflect.TypeOf(&structpb.Value{}))
+		t, err := val.ConvertToNative(reflect.TypeFor[*structpb.Value]())
 		if err == nil {
 			anyVal, ok := t.(*structpb.Value)
 			if ok {
@@ -195,7 +195,7 @@ func Val2String(val ref.Val) (out string, err error) {
 			out = t.Error()
 		}
 	case types.ListType.TypeName():
-		t, err := val.ConvertToNative(reflect.TypeOf(&structpb.Value{}))
+		t, err := val.ConvertToNative(reflect.TypeFor[*structpb.Value]())
 		if err == nil {
 			anyVal, ok := t.(*structpb.Value)
 			if ok {
@@ -208,7 +208,7 @@ func Val2String(val ref.Val) (out string, err error) {
 	case types.UnknownType.TypeName():
 		out = ""
 	case types.MapType.TypeName():
-		t, err := val.ConvertToNative(reflect.TypeOf(&structpb.Value{}))
+		t, err := val.ConvertToNative(reflect.TypeFor[*structpb.Value]())
 		if err == nil {
 			anyVal, ok := t.(*structpb.Value)
 			if ok {
@@ -286,14 +286,14 @@ func Val2Pb(val ref.Val) (out *structpb.Value, err error) {
 			out = structpb.NewStringValue(t.Error())
 		}
 	case types.ListType.TypeName():
-		t, err := val.ConvertToNative(reflect.TypeOf(&structpb.Value{}))
+		t, err := val.ConvertToNative(reflect.TypeFor[*structpb.Value]())
 		if err == nil {
 			out, _ = t.(*structpb.Value)
 		}
 	case types.UnknownType.TypeName():
 		out = structpb.NewNullValue()
 	case types.MapType.TypeName():
-		t, err := val.ConvertToNative(reflect.TypeOf(&structpb.Value{}))
+		t, err := val.ConvertToNative(reflect.TypeFor[*structpb.Value]())
 		if err == nil {
 			out, _ = t.(*structpb.Value)
 		}

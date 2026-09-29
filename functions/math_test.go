@@ -199,7 +199,7 @@ func TestMathRandFunctions(t *testing.T) {
 	env := newTestEnvWithVars(t)
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			for i := 0; i < iterations; i++ {
+			for range iterations {
 				out, err := evalOnce(t, env, tt.source, tt.vars)
 				if err != nil {
 					t.Fatalf("Eval: %v", err)
@@ -347,7 +347,7 @@ func TestMathRandDeterministicBounds(t *testing.T) {
 			name := "randi(" + base + "," + itoa(n) + ")"
 			t.Run(name, func(t *testing.T) {
 				src := "math.randi(" + base + ", " + itoa(n) + ")"
-				for i := 0; i < 100; i++ {
+				for range 100 {
 					out, err := evalOnce(t, env, src, nil)
 					if err != nil {
 						t.Fatalf("Eval(%q): %v", src, err)

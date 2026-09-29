@@ -51,7 +51,7 @@ func TestBitwiseErrors(tt *testing.T) {
 				t.Error(err)
 				return
 			}
-			_, _, err = prg.Eval(map[string]interface{}{})
+			_, _, err = prg.Eval(map[string]any{})
 			if err == nil {
 				t.Error("expected error, got none")
 			}
@@ -87,7 +87,7 @@ func TestBytesConversionErrors(tt *testing.T) {
 				t.Error(err)
 				return
 			}
-			_, _, err = prg.Eval(map[string]interface{}{
+			_, _, err = prg.Eval(map[string]any{
 				"buff": []byte{0x01},
 			})
 			if err == nil {
@@ -124,7 +124,7 @@ func TestNumToBytesErrors(tt *testing.T) {
 				t.Error(err)
 				return
 			}
-			_, _, err = prg.Eval(map[string]interface{}{})
+			_, _, err = prg.Eval(map[string]any{})
 			if err == nil {
 				t.Error("expected error, got none")
 			}
@@ -204,7 +204,7 @@ func TestSliceErrors(tt *testing.T) {
 		if err != nil {
 			tt.Fatal(err)
 		}
-		_, _, err = prg.Eval(map[string]interface{}{})
+		_, _, err = prg.Eval(map[string]any{})
 		if err == nil {
 			tt.Error("expected error for negative end index")
 		}

@@ -49,7 +49,7 @@ func TestBytes2Double(tt *testing.T) {
 				t.FailNow()
 			}
 
-			out, _, err := prg.Eval(map[string]interface{}{
+			out, _, err := prg.Eval(map[string]any{
 				"buff": v.buff,
 			})
 			if err != nil {
@@ -107,7 +107,7 @@ func TestDouble2Bytes(tt *testing.T) {
 				t.FailNow()
 			}
 
-			out, _, err := prg.Eval(map[string]interface{}{
+			out, _, err := prg.Eval(map[string]any{
 				"buff": v.buff,
 			})
 			if err != nil {
@@ -175,7 +175,7 @@ func TestBytes2Uint(tt *testing.T) {
 				t.FailNow()
 			}
 
-			out, _, err := prg.Eval(map[string]interface{}{
+			out, _, err := prg.Eval(map[string]any{
 				"buff": v.buff,
 			})
 			if err != nil {
@@ -243,7 +243,7 @@ func TestUint2Bytes(tt *testing.T) {
 				t.FailNow()
 			}
 
-			out, _, err := prg.Eval(map[string]interface{}{
+			out, _, err := prg.Eval(map[string]any{
 				"buff": v.buff,
 			})
 			if err != nil {
@@ -311,7 +311,7 @@ func TestBytes2Int(tt *testing.T) {
 				t.FailNow()
 			}
 
-			out, _, err := prg.Eval(map[string]interface{}{
+			out, _, err := prg.Eval(map[string]any{
 				"buff": v.buff,
 			})
 			if err != nil {
@@ -379,7 +379,7 @@ func TestInt2Bytes(tt *testing.T) {
 				t.FailNow()
 			}
 
-			out, _, err := prg.Eval(map[string]interface{}{
+			out, _, err := prg.Eval(map[string]any{
 				"buff": v.buff,
 			})
 			if err != nil {
@@ -614,7 +614,7 @@ func TestBytes(tt *testing.T) {
 				t.FailNow()
 			}
 
-			out, _, err := prg.Eval(map[string]interface{}{
+			out, _, err := prg.Eval(map[string]any{
 				"buff": v.buff,
 			})
 			if err != nil {

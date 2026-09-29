@@ -214,7 +214,7 @@ func TestMath(tt *testing.T) {
 				t.FailNow()
 			}
 
-			out, _, err := prg.Eval(map[string]interface{}{})
+			out, _, err := prg.Eval(map[string]any{})
 			if err != nil {
 				t.Errorf("Evaluation error: %v\n", err)
 				t.FailNow()

@@ -71,88 +71,88 @@ func TestVal2Pb(tt *testing.T) {
 	tests := []struct {
 		name   string
 		val    ref.Val
-		expect func(t *testing.T, v interface{})
+		expect func(t *testing.T, v any)
 	}{
-		{"bytes", types.Bytes([]byte{0x01, 0x02, 0x03}), func(t *testing.T, v interface{}) {
+		{"bytes", types.Bytes([]byte{0x01, 0x02, 0x03}), func(t *testing.T, v any) {
 			s, ok := v.(string)
 			// structpb encodes bytes as base64
 			if !ok || s != "AQID" {
 				t.Errorf("got %v (%T)", v, v)
 			}
 		}},
-		{"bool_true", types.Bool(true), func(t *testing.T, v interface{}) {
+		{"bool_true", types.Bool(true), func(t *testing.T, v any) {
 			b, ok := v.(bool)
 			if !ok || !b {
 				t.Errorf("got %v (%T)", v, v)
 			}
 		}},
-		{"bool_false", types.Bool(false), func(t *testing.T, v interface{}) {
+		{"bool_false", types.Bool(false), func(t *testing.T, v any) {
 			b, ok := v.(bool)
 			if !ok || b {
 				t.Errorf("got %v (%T)", v, v)
 			}
 		}},
-		{"double", types.Double(3.14), func(t *testing.T, v interface{}) {
+		{"double", types.Double(3.14), func(t *testing.T, v any) {
 			f, ok := v.(float64)
 			if !ok || f != 3.14 {
 				t.Errorf("got %v (%T)", v, v)
 			}
 		}},
-		{"int_neg", types.Int(-42), func(t *testing.T, v interface{}) {
+		{"int_neg", types.Int(-42), func(t *testing.T, v any) {
 			f, ok := v.(float64)
 			if !ok || f != -42 {
 				t.Errorf("got %v (%T)", v, v)
 			}
 		}},
-		{"uint", types.Uint(42), func(t *testing.T, v interface{}) {
+		{"uint", types.Uint(42), func(t *testing.T, v any) {
 			f, ok := v.(float64)
 			if !ok || f != 42 {
 				t.Errorf("got %v (%T)", v, v)
 			}
 		}},
-		{"string", types.String("hello"), func(t *testing.T, v interface{}) {
+		{"string", types.String("hello"), func(t *testing.T, v any) {
 			s, ok := v.(string)
 			if !ok || s != "hello" {
 				t.Errorf("got %v (%T)", v, v)
 			}
 		}},
-		{"null", types.NullValue, func(t *testing.T, v interface{}) {
+		{"null", types.NullValue, func(t *testing.T, v any) {
 			if v != nil {
 				t.Errorf("got %v, want nil", v)
 			}
 		}},
-		{"duration", types.Duration{Duration: 3 * time.Minute}, func(t *testing.T, v interface{}) {
+		{"duration", types.Duration{Duration: 3 * time.Minute}, func(t *testing.T, v any) {
 			s, ok := v.(string)
 			if !ok || s != "3m0s" {
 				t.Errorf("got %v (%T)", v, v)
 			}
 		}},
-		{"timestamp", types.Timestamp{Time: ts}, func(t *testing.T, v interface{}) {
+		{"timestamp", types.Timestamp{Time: ts}, func(t *testing.T, v any) {
 			s, ok := v.(string)
 			if !ok || s != ts.String() {
 				t.Errorf("got %q, want %q", s, ts.String())
 			}
 		}},
-		{"error", types.NoSuchOverloadErr(), func(t *testing.T, v interface{}) {
+		{"error", types.NoSuchOverloadErr(), func(t *testing.T, v any) {
 			s, ok := v.(string)
 			if !ok || s != "no such overload" {
 				t.Errorf("got %v (%T)", v, v)
 			}
 		}},
-		{"type_type", types.BoolType, func(t *testing.T, v interface{}) {
+		{"type_type", types.BoolType, func(t *testing.T, v any) {
 			s, ok := v.(string)
 			if !ok || s != "bool" {
 				t.Errorf("got %v (%T)", v, v)
 			}
 		}},
-		{"list", types.NewDynamicList(reg, []float64{0.12}), func(t *testing.T, v interface{}) {
-			l, ok := v.([]interface{})
+		{"list", types.NewDynamicList(reg, []float64{0.12}), func(t *testing.T, v any) {
+			l, ok := v.([]any)
 			if !ok || len(l) != 1 {
 				t.Errorf("got %v (%T)", v, v)
 			}
 		}},
-		{"map", types.NewDynamicMap(reg, map[string]int64{"a": 1}), func(t *testing.T, v interface{}) {
-			m, ok := v.(map[string]interface{})
+		{"map", types.NewDynamicMap(reg, map[string]int64{"a": 1}), func(t *testing.T, v any) {
+			m, ok := v.(map[string]any)
 			if !ok || m["a"].(float64) != 1 {
 				t.Errorf("got %v (%T)", v, v)
 			}

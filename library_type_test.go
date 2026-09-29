@@ -188,7 +188,7 @@ func TestType(tt *testing.T) {
 				t.FailNow()
 			}
 
-			out, _, err := prg.Eval(map[string]interface{}{
+			out, _, err := prg.Eval(map[string]any{
 				"buff": v.in,
 			})
 			if err != nil {
