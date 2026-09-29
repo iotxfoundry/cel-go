@@ -2,6 +2,16 @@
 
 Extended computation library for [google/cel-go](https://github.com/google/cel-go). Provides additional member functions for bytes, integer, and unsigned integer types, plus math random utilities and value conversion helpers.
 
+## Documentation
+
+The full function and macro reference is generated into [expr.md](expr.md), split into the CEL standard library (with official `ext.*` packages) and this library's extensions. After changing any function definition, regenerate it with:
+
+```bash
+go generate ./...
+```
+
+`go test ./...` verifies the document is up to date.
+
 ## Installation
 
 ```bash

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"os"
 	"path/filepath"
 	"strings"
@@ -57,9 +58,12 @@ func TestMainWritesDoc(t *testing.T) {
 	}
 	doc := string(data)
 	for _, want := range []string{
-		"# CEL Standard Library Functions",
+		"# CEL Library Functions",
+		"## Standard Library & Official Extensions",
+		"## ComputeLib Extensions",
 		"| name | id | expr | example |",
 		"Standard Macros",
+		"Library Macros",
 	} {
 		if !strings.Contains(doc, want) {
 			t.Errorf("expr.md missing %q", want)
@@ -67,5 +71,24 @@ func TestMainWritesDoc(t *testing.T) {
 	}
 	if len(doc) < 1000 {
 		t.Errorf("expr.md suspiciously small (%d bytes); function table likely empty", len(doc))
+	}
+}
+
+// TestExprMDUpToDate guards against documentation drift: the committed
+// expr.md must match what the generator produces. If this test fails, run
+// `go generate ./...` and commit the refreshed expr.md.
+func TestExprMDUpToDate(t *testing.T) {
+	var buf bytes.Buffer
+	if err := run(&buf); err != nil {
+		t.Fatalf("generate: %v", err)
+	}
+
+	root := filepath.Join("..", "..")
+	want, err := os.ReadFile(filepath.Join(root, "expr.md"))
+	if err != nil {
+		t.Fatalf("expr.md missing in repository root; run `go generate ./...`: %v", err)
+	}
+	if !bytes.Equal(buf.Bytes(), want) {
+		t.Errorf("expr.md is stale; run `go generate ./...` and commit the result")
 	}
 }

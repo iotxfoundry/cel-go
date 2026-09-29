@@ -1,8 +1,19 @@
+// Command doc generates expr.md, the function and macro reference for the
+// CEL environment used by this repository. The output is split into a
+// standard-library section (CEL core plus the official ext.* packages) and a
+// ComputeLib section covering the extensions defined in this repository,
+// identified as the declaration delta between the two environments. Rows are
+// sorted so that regeneration is deterministic; run it via:
+//
+//	go generate ./
 package main
 
 import (
+	"flag"
 	"fmt"
+	"io"
 	"os"
+	"sort"
 	"strings"
 
 	"github.com/google/cel-go/cel"
@@ -12,26 +23,29 @@ import (
 )
 
 func main() {
-	file, err := os.OpenFile("expr.md", os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
+	out := flag.String("o", "expr.md", "output markdown file path")
+	flag.Parse()
+
+	file, err := os.OpenFile(*out, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed to open file: %v\n", err)
-		return
+		os.Exit(1)
 	}
 	defer file.Close()
-	fmt.Fprintln(file, "# CEL Standard Library Functions")
-	fmt.Fprintln(file, "")
-	fmt.Fprintln(file, "This document lists the standard functions available in the CEL standard library.")
-	fmt.Fprintln(file, "Each function is represented with its name, ID, expression signature, deprecation status, and examples.")
-	fmt.Fprintln(file, "The table below provides a comprehensive overview of these functions.")
-	fmt.Fprintln(file, "")
-	fmt.Fprintln(file, "- Standard Functions")
-	fmt.Fprintln(file, "")
-	fmt.Fprintln(file, "| name | id | expr | example |")
-	fmt.Fprintln(file, "|------|----|------| ------- |")
 
-	env, err := cel.NewEnv(
+	if err := run(file); err != nil {
+		fmt.Fprintf(os.Stderr, "failed to generate documentation: %v\n", err)
+		os.Exit(1)
+	}
+}
+
+// baseEnvOptions builds the environment for the CEL standard library plus the
+// official ext.* packages. It is used both standalone (the base environment)
+// and as the prefix of the full environment, so the ComputeLib extensions can
+// be derived as the declaration delta between the two.
+func baseEnvOptions() []cel.EnvOption {
+	return []cel.EnvOption{
 		cel.OptionalTypes(cel.OptionalTypesVersion(3)),
-		compute.ComputeLib(),
 		ext.Strings(ext.StringsVersion(3)),
 		ext.Sets(ext.SetsVersion(3)),
 		ext.Regex(ext.RegexVersion(3)),
@@ -42,48 +56,182 @@ func main() {
 		ext.Encoders(ext.EncodersVersion(3)),
 		ext.TwoVarComprehensions(ext.TwoVarComprehensionsVersion(3)),
 		ext.Bindings(ext.BindingsVersion(3)),
-	)
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "failed to create env: %v\n", err)
-		return
 	}
-	decls := env.Functions()
-	for _, decl := range decls {
+}
+
+// fnRow is one row of a function reference table.
+type fnRow struct {
+	name    string
+	id      string
+	sig     string
+	example string
+}
+
+// macroRow is one row of a macro reference table.
+type macroRow struct {
+	name    string
+	key     string
+	example string
+}
+
+// run renders the full function and macro reference into w.
+func run(w io.Writer) error {
+	base, err := cel.NewEnv(baseEnvOptions()...)
+	if err != nil {
+		return fmt.Errorf("failed to create base env: %w", err)
+	}
+	full, err := cel.NewEnv(append(baseEnvOptions(), compute.ComputeLib())...)
+	if err != nil {
+		return fmt.Errorf("failed to create full env: %w", err)
+	}
+
+	baseFns := base.Functions()
+	baseMacros := macroKeys(base.Macros())
+
+	var stdFns, libFns []fnRow
+	for name, decl := range full.Functions() {
 		if decl.IsDeclarationDisabled() {
 			continue
 		}
+		baseODs := map[string]bool{}
+		if baseDecl, ok := baseFns[name]; ok {
+			for _, od := range baseDecl.OverloadDecls() {
+				baseODs[od.ID()] = true
+			}
+		}
 		for _, od := range decl.OverloadDecls() {
-			args := []string{}
+			args := make([]string, 0, len(od.ArgTypes()))
 			for _, at := range od.ArgTypes() {
 				args = append(args, at.TypeName())
 			}
-			example := strings.Join(od.Examples(), "\n")
-			example = escapeMarkdown(example)
-			name := decl.Name()
-			name = escapeMarkdown(name)
-			resultType := od.ResultType().String()
-			resultType = escapeMarkdown(resultType)
-			fmt.Fprintf(file, "|`%s`|%s|(%s) -> %s|%s|\n", name, od.ID(), strings.Join(args, ","), resultType, example)
+			row := fnRow{
+				name:    escapeMarkdown(name),
+				id:      od.ID(),
+				sig:     fmt.Sprintf("(%s) -> %s", strings.Join(args, ","), escapeMarkdown(od.ResultType().String())),
+				example: escapeMarkdown(strings.Join(od.Examples(), "\n")),
+			}
+			if baseODs[od.ID()] {
+				stdFns = append(stdFns, row)
+			} else {
+				libFns = append(libFns, row)
+			}
 		}
+	}
+	sortFnRows(stdFns)
+	sortFnRows(libFns)
+
+	var stdMacros, libMacros []macroRow
+	for _, micro := range full.Macros() {
+		row := macroRow{
+			name: escapeMarkdown(micro.Function()),
+			key:  escapeMarkdown(micro.MacroKey()),
+		}
+		if doc, ok := micro.(common.Documentor); ok {
+			descs := []string{}
+			if d := doc.Documentation(); d != nil {
+				for _, child := range d.Children {
+					descs = append(descs, child.Description)
+				}
+			}
+			row.example = escapeMarkdown(strings.Join(descs, "\n"))
+		}
+		if baseMacros[micro.MacroKey()] {
+			stdMacros = append(stdMacros, row)
+		} else {
+			libMacros = append(libMacros, row)
+		}
+	}
+	sort.Slice(stdMacros, func(i, j int) bool { return stdMacros[i].key < stdMacros[j].key })
+	sort.Slice(libMacros, func(i, j int) bool { return libMacros[i].key < libMacros[j].key })
+
+	var b strings.Builder
+	fmt.Fprintln(&b, "# CEL Library Functions")
+	fmt.Fprintln(&b, "")
+	fmt.Fprintln(&b, "This document is generated by `go generate ./...` (cmd/doc/main.go); do not edit it by hand.")
+	fmt.Fprintln(&b, "Each function is listed with its name, overload ID, expression signature, and examples.")
+	fmt.Fprintln(&b, "")
+
+	fmt.Fprintln(&b, "## Standard Library & Official Extensions")
+	fmt.Fprintln(&b, "")
+	fmt.Fprintln(&b, "Functions and macros from the CEL standard library and the official `ext.*` packages.")
+	fmt.Fprintln(&b, "")
+	if err := writeFnTable(&b, stdFns); err != nil {
+		return err
+	}
+	fmt.Fprintln(&b, "### Standard Macros")
+	fmt.Fprintln(&b, "")
+	if err := writeMacroTable(&b, stdMacros); err != nil {
+		return err
 	}
 
-	fmt.Fprintln(file, "- Standard Macros")
-	fmt.Fprintln(file, "")
-	fmt.Fprintln(file, "| name |  expr | example |")
-	fmt.Fprintln(file, "|------|-------|---------|")
-	micros := env.Macros()
-	for _, micro := range micros {
-		doc := micro.(common.Documentor)
-		descs := []string{}
-		for _, child := range doc.Documentation().Children {
-			descs = append(descs, child.Description)
-		}
-		key := micro.MacroKey()
-		key = escapeMarkdown(key)
-		example := strings.Join(descs, "\n")
-		example = escapeMarkdown(example)
-		fmt.Fprintf(file, "|`%s`|`%s`|%s|\n", micro.Function(), key, example)
+	fmt.Fprintln(&b, "## ComputeLib Extensions")
+	fmt.Fprintln(&b, "")
+	fmt.Fprintln(&b, "Functions and macros added by this repository via `compute.ComputeLib()`: "+
+		"cross-type arithmetic, bitwise operations for bytes/int/uint, bytes utilities, and random numbers.")
+	fmt.Fprintln(&b, "")
+	if err := writeFnTable(&b, libFns); err != nil {
+		return err
 	}
+	fmt.Fprintln(&b, "### Library Macros")
+	fmt.Fprintln(&b, "")
+	if err := writeMacroTable(&b, libMacros); err != nil {
+		return err
+	}
+
+	_, err = w.Write([]byte(b.String()))
+	return err
+}
+
+// sortFnRows orders rows by function name then overload ID so that generation
+// is deterministic regardless of map iteration order.
+func sortFnRows(rows []fnRow) {
+	sort.Slice(rows, func(i, j int) bool {
+		if rows[i].name != rows[j].name {
+			return rows[i].name < rows[j].name
+		}
+		return rows[i].id < rows[j].id
+	})
+}
+
+// macroKeys returns the set of macro keys declared by the environment.
+func macroKeys(macros []cel.Macro) map[string]bool {
+	keys := make(map[string]bool, len(macros))
+	for _, m := range macros {
+		keys[m.MacroKey()] = true
+	}
+	return keys
+}
+
+func writeFnTable(w *strings.Builder, rows []fnRow) error {
+	if _, err := fmt.Fprintln(w, "| name | id | expr | example |"); err != nil {
+		return err
+	}
+	if _, err := fmt.Fprintln(w, "|------|----|------| ------- |"); err != nil {
+		return err
+	}
+	for _, r := range rows {
+		if _, err := fmt.Fprintf(w, "|`%s`|%s|%s|%s|\n", r.name, r.id, r.sig, r.example); err != nil {
+			return err
+		}
+	}
+	fmt.Fprintln(w, "")
+	return nil
+}
+
+func writeMacroTable(w *strings.Builder, rows []macroRow) error {
+	if _, err := fmt.Fprintln(w, "| name | expr | example |"); err != nil {
+		return err
+	}
+	if _, err := fmt.Fprintln(w, "|------|-------|---------|"); err != nil {
+		return err
+	}
+	for _, r := range rows {
+		if _, err := fmt.Fprintf(w, "|`%s`|`%s`|%s|\n", r.name, r.key, r.example); err != nil {
+			return err
+		}
+	}
+	fmt.Fprintln(w, "")
+	return nil
 }
 
 func escapeMarkdown(s string) string {
