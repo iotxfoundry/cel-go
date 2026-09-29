@@ -48,8 +48,8 @@ out, _, _ := prg.Eval(map[string]any{"buff": []byte{0x01, 0x02, 0x03}})
 | `bitwise_or(bytes)` | `bytes → bytes` | Bitwise OR between two byte sequences |
 | `bitwise_xor(bytes)` | `bytes → bytes` | Bitwise XOR between two byte sequences |
 | `bitwise_clear(bytes)` | `bytes → bytes` | Bitwise AND-NOT (clears bits where mask is 1) |
-| `bitwise_shr(int)` | `bytes → bytes` | Bitwise right shift (negative values shift left) |
-| `bitwise_shl(int)` | `bytes → bytes` | Bitwise left shift (negative values shift right) |
+| `bitwise_shr(int)` | `bytes → bytes` | Bitwise right shift as unsigned big-endian integer (negative values shift left); any magnitude, zeros shifted in |
+| `bitwise_shl(int)` | `bytes → bytes` | Bitwise left shift as unsigned big-endian integer (negative values shift right); any magnitude, zeros shifted in |
 | `bitwise_not()` | `bytes → bytes` | Bitwise NOT (ones-complement) on each byte |
 | `bitwise_index(int)` | `bytes → bytes` | Returns a single-bit byte at the given bit index |
 | `bitwise_popcnt()` | `bytes → int` | Population count (number of bits set to 1) |
@@ -114,15 +114,21 @@ Since CEL's built-in operators (`+`, `-`, `*`, `/`, `%`) use trait-based singlet
 | `div(int)` | Division (int receiver) |
 | `div(uint)` | Returns int |
 | `div(double)` | Returns double |
-| `mod(int)` | Modulo (int receiver) |
+| `mod(int)` | Modulo (int receiver; no double support, like CEL's `%`) |
 | `mod(uint)` | Returns int |
 
 The same functions are available on `uint` and `double` receivers. Type promotion rules:
 
 | Mix | Returns | Reason |
 |-----|---------|--------|
-| int + uint | int | signed type for potential negative results |
+| int + uint | int | signed type for possible negative results |
 | any + double | double | double has widest range |
+
+Error semantics mirror CEL's built-in operators: integer overflow returns an
+`integer overflow` error instead of wrapping, division or modulo by zero
+returns `division by zero` / `modulus by zero`, and `MinInt64` combined with
+`-1` in div/mod/mul returns `integer overflow`. Double division follows IEEE
+754 (e.g. `10.div(0.0)` is `+Inf`), matching CEL's `/` on doubles.
 
 ```cel
 3.add(4u)      // 7 (int)
@@ -141,6 +147,9 @@ The same functions are available on `uint` and `double` receivers. Type promotio
 
 10.mod(4u)     // 2 (int)
 -10.mod(4u)    // -2 (int)
+
+9223372036854775807.add(1)  // error: integer overflow
+10.div(0)                   // error: division by zero
 ```
 
 ### Math Random Functions
@@ -156,6 +165,12 @@ The same functions are available on `uint` and `double` receivers. Type promotio
 | `math.randui(int/uint/double)` | `→ uint` | Random uint32 (32) or uint64 (64) |
 
 > **Note:** These functions use `math/rand` and are not suitable for security-sensitive applications. Use `crypto/rand` for cryptographic randomness.
+>
+> **Bound validation:** `math.randi(base, n)` requires a positive `n` that fits
+> the selected width (`n <= MaxInt32` for base 32, `n <= MaxInt64` for base 64);
+> violations return a `bound '<n>' out of ... size` evaluation error. Invalid
+> base values (anything other than 32/64) return a `base '<b>' out of ... size`
+> error.
 
 ### Value Conversion Utilities
 

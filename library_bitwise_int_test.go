@@ -86,6 +86,28 @@ func TestIntBitwise(tt *testing.T) {
 			source: `10.bitwise_index(0) == b"\x00"`,
 			out:    types.Bool(true),
 		},
+		"int.bitwise_index_63": {
+			source: `(-9223372036854775808).bitwise_index(63) == b"\x01"`,
+			out:    types.Bool(true),
+		},
+		// shift counts beyond the 64-bit width and MinInt64 magnitudes must
+		// evaluate without panicking (Go full-width shift semantics)
+		"int.bitwise_shl_huge": {
+			source: `1.bitwise_shl(64)`,
+			out:    types.Int(0),
+		},
+		"int.bitwise_shr_huge": {
+			source: `1.bitwise_shr(64)`,
+			out:    types.Int(0),
+		},
+		"int.bitwise_shr_minint_shift": {
+			source: `1.bitwise_shr(-9223372036854775808)`,
+			out:    types.Int(0),
+		},
+		"int.bitwise_shl_minint_shift": {
+			source: `(-1).bitwise_shl(-9223372036854775808)`,
+			out:    types.Int(-1),
+		},
 	}
 
 	env, err := cel.NewEnv(
@@ -190,6 +212,28 @@ func TestUintBitwise(tt *testing.T) {
 		"uint.bitwise_index_0": {
 			source: `10u.bitwise_index(0) == b"\x00"`,
 			out:    types.Bool(true),
+		},
+		"uint.bitwise_index_63": {
+			source: `(18446744073709551615u).bitwise_index(63) == b"\x01"`,
+			out:    types.Bool(true),
+		},
+		// shift counts beyond the 64-bit width and MinInt64 magnitudes must
+		// evaluate without panicking (Go full-width shift semantics)
+		"uint.bitwise_shl_huge": {
+			source: `1u.bitwise_shl(64)`,
+			out:    types.Uint(0),
+		},
+		"uint.bitwise_shr_huge": {
+			source: `1u.bitwise_shr(64)`,
+			out:    types.Uint(0),
+		},
+		"uint.bitwise_shr_minint_shift": {
+			source: `1u.bitwise_shr(-9223372036854775808)`,
+			out:    types.Uint(0),
+		},
+		"uint.bitwise_shl_minint_shift": {
+			source: `18446744073709551615u.bitwise_shl(-9223372036854775808)`,
+			out:    types.Uint(0),
 		},
 	}
 

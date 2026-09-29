@@ -1,6 +1,6 @@
 package overloads
 
-// bitwisewise overloads
+// bitwise overloads
 const (
 	// BitwiseAnd 按位与
 	BitwiseAnd      = "bitwise_and"
@@ -22,7 +22,8 @@ const (
 	BitwiseIndex    = "bitwise_index"
 	BitwiseIndexInt = "bitwise_index_int"
 
-	// BitwiseShiftRight 按位右移
+	// BitwiseShiftRight 按位右移。ID 中的 int 指移位量参数类型；Go 常量名
+	// 沿用 Int64 后缀，与 ID 字符串 "bitwise_shr_int" 并不完全一致。
 	BitwiseShiftRight      = "bitwise_shr"
 	BitwiseShiftRightInt64 = "bitwise_shr_int"
 

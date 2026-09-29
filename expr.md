@@ -15,15 +15,15 @@ The table below provides a comprehensive overview of these functions.
 |`bitwise_clear`|int_bitwise_clear_int_int|(int,int) -> int|7.bitwise_clear(1) // 6<br>-1.bitwise_clear(0) // -1|
 |`bitwise_clear`|uint_bitwise_clear_uint_uint|(uint,uint) -> uint|7u.bitwise_clear(1u) // 6u<br>255u.bitwise_clear(0u) // 255u|
 |`base64.encode`|base64_encode_bytes|(bytes) -> string||
-|`div`|div_int64_int64|(int,int) -> int||
-|`div`|div_int64_uint64|(int,uint) -> int||
-|`div`|div_int64_double|(int,double) -> double||
-|`div`|div_uint64_uint64|(uint,uint) -> uint||
-|`div`|div_uint64_int64|(uint,int) -> int||
-|`div`|div_uint64_double|(uint,double) -> double||
-|`div`|div_double_double|(double,double) -> double||
-|`div`|div_double_int64|(double,int) -> double||
-|`div`|div_double_uint64|(double,uint) -> double||
+|`div`|arith_div_int64_int64|(int,int) -> int||
+|`div`|arith_div_int64_uint64|(int,uint) -> int||
+|`div`|arith_div_int64_double|(int,double) -> double||
+|`div`|arith_div_uint64_uint64|(uint,uint) -> uint||
+|`div`|arith_div_uint64_int64|(uint,int) -> int||
+|`div`|arith_div_uint64_double|(uint,double) -> double||
+|`div`|arith_div_double_double|(double,double) -> double||
+|`div`|arith_div_double_int64|(double,int) -> double||
+|`div`|arith_div_double_uint64|(double,uint) -> double||
 |`math.sign`|math_sign_double|(double) -> double||
 |`math.sign`|math_sign_int|(int) -> int||
 |`math.sign`|math_sign_uint|(uint) -> uint||
@@ -31,7 +31,7 @@ The table below provides a comprehensive overview of these functions.
 |`dyn`|to_dyn|(A) -> dyn|dyn(1) // 1|
 |`math.trunc`|math_trunc_double|(double) -> double||
 |`optional.unwrap`|optional_unwrap|(list) -> list(\<V\>)|optional.unwrap([optional.of(1), optional.none()]) // [1]|
-|`bitwise_shr`|bitwise_shr_int|(bytes,int) -> bytes|b"\xf0".bitwise_shr(4) // b"\x0f"|
+|`bitwise_shr`|bitwise_shr_int|(bytes,int) -> bytes|b"\xf0".bitwise_shr(4) // b"\x0f"<br>b"\xff\xff".bitwise_shr(8) // b"\x00\xff"|
 |`bitwise_shr`|int_bitwise_shr_int_int|(int,int) -> int|8.bitwise_shr(2) // 2<br>-8.bitwise_shr(2) // -2|
 |`bitwise_shr`|uint_bitwise_shr_uint_int|(uint,int) -> uint|8u.bitwise_shr(2) // 2u<br>2u.bitwise_shr(-2) // 8u|
 |`_!=_`|not_equals|(A,A) -> bool|1 != 2     // true<br>"a" != "a" // false<br>3.0 != 3.1 // true|
@@ -108,15 +108,15 @@ The table below provides a comprehensive overview of these functions.
 |`math.sqrt`|math_sqrt_int|(int) -> double||
 |`math.sqrt`|math_sqrt_uint|(uint) -> double||
 |`hasValue`|optional_hasValue|(optional_type) -> bool|optional.of({1: 2}).hasValue() // true|
-|`mul`|mul_int64_int64|(int,int) -> int||
-|`mul`|mul_int64_uint64|(int,uint) -> int||
-|`mul`|mul_int64_double|(int,double) -> double||
-|`mul`|mul_uint64_uint64|(uint,uint) -> uint||
-|`mul`|mul_uint64_int64|(uint,int) -> int||
-|`mul`|mul_uint64_double|(uint,double) -> double||
-|`mul`|mul_double_double|(double,double) -> double||
-|`mul`|mul_double_int64|(double,int) -> double||
-|`mul`|mul_double_uint64|(double,uint) -> double||
+|`mul`|arith_mul_int64_int64|(int,int) -> int||
+|`mul`|arith_mul_int64_uint64|(int,uint) -> int||
+|`mul`|arith_mul_int64_double|(int,double) -> double||
+|`mul`|arith_mul_uint64_uint64|(uint,uint) -> uint||
+|`mul`|arith_mul_uint64_int64|(uint,int) -> int||
+|`mul`|arith_mul_uint64_double|(uint,double) -> double||
+|`mul`|arith_mul_double_double|(double,double) -> double||
+|`mul`|arith_mul_double_int64|(double,int) -> double||
+|`mul`|arith_mul_double_uint64|(double,uint) -> double||
 |`_/_`|divide_double|(double,double) -> double|7.0 / 2.0 // 3.5|
 |`_/_`|divide_int64|(int,int) -> int|10 / 2 // 5|
 |`_/_`|divide_uint64|(uint,uint) -> uint|42u / 2u // 21u|
@@ -127,15 +127,15 @@ The table below provides a comprehensive overview of these functions.
 |`math.abs`|math_abs_double|(double) -> double||
 |`math.abs`|math_abs_int|(int) -> int||
 |`math.abs`|math_abs_uint|(uint) -> uint||
-|`add`|add_int64_int64|(int,int) -> int||
-|`add`|add_int64_uint64|(int,uint) -> int||
-|`add`|add_int64_double|(int,double) -> double||
-|`add`|add_uint64_uint64|(uint,uint) -> uint||
-|`add`|add_uint64_int64|(uint,int) -> int||
-|`add`|add_uint64_double|(uint,double) -> double||
-|`add`|add_double_double|(double,double) -> double||
-|`add`|add_double_int64|(double,int) -> double||
-|`add`|add_double_uint64|(double,uint) -> double||
+|`add`|arith_add_int64_int64|(int,int) -> int||
+|`add`|arith_add_int64_uint64|(int,uint) -> int||
+|`add`|arith_add_int64_double|(int,double) -> double||
+|`add`|arith_add_uint64_uint64|(uint,uint) -> uint||
+|`add`|arith_add_uint64_int64|(uint,int) -> int||
+|`add`|arith_add_uint64_double|(uint,double) -> double||
+|`add`|arith_add_double_double|(double,double) -> double||
+|`add`|arith_add_double_int64|(double,int) -> double||
+|`add`|arith_add_double_uint64|(double,uint) -> double||
 |`math.floor`|math_floor_double|(double) -> double||
 |`size`|size_bytes|(bytes) -> int|size(b'123') // 3|
 |`size`|bytes_size|(bytes) -> int|b'123'.size() // 3|
@@ -246,7 +246,7 @@ The table below provides a comprehensive overview of these functions.
 |`_\>_`|greater_bytes|(bytes,bytes) -> bool|b'world' \> b'hello' // true|
 |`_\>_`|greater_timestamp|(google.protobuf.Timestamp,google.protobuf.Timestamp) -> bool|timestamp('2002-02-02T02:03:04Z') \> timestamp('2001-01-01T02:03:04Z') // true|
 |`_\>_`|greater_duration|(google.protobuf.Duration,google.protobuf.Duration) -> bool|duration('1ms') \> duration('1us') // true|
-|`bitwise_shl`|bitwise_shl_int|(bytes,int) -> bytes|b"\xf0".bitwise_shl(4) // b"\x00"|
+|`bitwise_shl`|bitwise_shl_int|(bytes,int) -> bytes|b"\xf0".bitwise_shl(4) // b"\x00"<br>b"\x00\xff".bitwise_shl(8) // b"\xff\x00"|
 |`bitwise_shl`|int_bitwise_shl_int_int|(int,int) -> int|2.bitwise_shl(2) // 8<br>8.bitwise_shl(-2) // 2|
 |`bitwise_shl`|uint_bitwise_shl_uint_int|(uint,int) -> uint|2u.bitwise_shl(2) // 8u<br>8u.bitwise_shl(-2) // 2u|
 |`replace`|string_replace_string_string|(string,string,string) -> string||
@@ -297,19 +297,19 @@ The table below provides a comprehensive overview of these functions.
 |`getDate`|timestamp_to_day_of_month_1_based_with_tz|(google.protobuf.Timestamp,string) -> int|timestamp('2023-07-01T05:00:00Z').getDate('America/Los_Angeles') // 30|
 |`-_`|negate_double|(double) -> double|-(3.14) // -3.14|
 |`-_`|negate_int64|(int) -> int|-(5) // -5|
-|`sub`|sub_int64_int64|(int,int) -> int||
-|`sub`|sub_int64_uint64|(int,uint) -> int||
-|`sub`|sub_int64_double|(int,double) -> double||
-|`sub`|sub_uint64_uint64|(uint,uint) -> uint||
-|`sub`|sub_uint64_int64|(uint,int) -> int||
-|`sub`|sub_uint64_double|(uint,double) -> double||
-|`sub`|sub_double_double|(double,double) -> double||
-|`sub`|sub_double_int64|(double,int) -> double||
-|`sub`|sub_double_uint64|(double,uint) -> double||
-|`mod`|mod_int64_int64|(int,int) -> int||
-|`mod`|mod_int64_uint64|(int,uint) -> int||
-|`mod`|mod_uint64_uint64|(uint,uint) -> uint||
-|`mod`|mod_uint64_int64|(uint,int) -> int||
+|`sub`|arith_sub_int64_int64|(int,int) -> int||
+|`sub`|arith_sub_int64_uint64|(int,uint) -> int||
+|`sub`|arith_sub_int64_double|(int,double) -> double||
+|`sub`|arith_sub_uint64_uint64|(uint,uint) -> uint||
+|`sub`|arith_sub_uint64_int64|(uint,int) -> int||
+|`sub`|arith_sub_uint64_double|(uint,double) -> double||
+|`sub`|arith_sub_double_double|(double,double) -> double||
+|`sub`|arith_sub_double_int64|(double,int) -> double||
+|`sub`|arith_sub_double_uint64|(double,uint) -> double||
+|`mod`|arith_mod_int64_int64|(int,int) -> int||
+|`mod`|arith_mod_int64_uint64|(int,uint) -> int||
+|`mod`|arith_mod_uint64_uint64|(uint,uint) -> uint||
+|`mod`|arith_mod_uint64_int64|(uint,int) -> int||
 |`bitwise_xor`|bitwise_xor_bytes|(bytes,bytes) -> bytes|b"\x0f".bitwise_xor(b"\xf0") // b"\xff"|
 |`bitwise_xor`|int_bitwise_xor_int_int|(int,int) -> int|5.bitwise_xor(3) // 6<br>-1.bitwise_xor(-1) // 0|
 |`bitwise_xor`|uint_bitwise_xor_uint_uint|(uint,uint) -> uint|5u.bitwise_xor(3u) // 6u<br>255u.bitwise_xor(255u) // 0u|

@@ -24,10 +24,10 @@ func TestBitwiseErrors(tt *testing.T) {
 		// bytes.delete error
 		"delete neg": `b"\x01".delete(-1)`,
 		// bytes.swap error
-		"swap neg a":    `b"\x01\x02".swap(-1, 0)`,
-		"swap big a":    `b"\x01\x02".swap(2, 0)`,
-		"swap neg b":    `b"\x01\x02".swap(0, -1)`,
-		"swap big b":    `b"\x01\x02".swap(0, 2)`,
+		"swap neg a": `b"\x01\x02".swap(-1, 0)`,
+		"swap big a": `b"\x01\x02".swap(2, 0)`,
+		"swap neg b": `b"\x01\x02".swap(0, -1)`,
+		"swap big b": `b"\x01\x02".swap(0, 2)`,
 		// bytes.index error
 		"index neg": `b"\x01".index(-1)`,
 		"index big": `b"\x01".index(1)`,
@@ -107,8 +107,8 @@ func TestNumToBytesErrors(tt *testing.T) {
 	}
 
 	tests := map[string]string{
-		"int_to_bytes bad":  `42.to_bytes(7)`,
-		"uint_to_bytes bad": `42u.to_bytes(7)`,
+		"int_to_bytes bad":    `42.to_bytes(7)`,
+		"uint_to_bytes bad":   `42u.to_bytes(7)`,
 		"double_to_bytes bad": `3.14.to_bytes(16)`,
 	}
 
@@ -142,11 +142,11 @@ func TestMathRandErrors(tt *testing.T) {
 	}
 
 	tests := map[string]string{
-		"randf two args": `math.randf(32, 64)`,
-		"randi bad base": `math.randi("bad")`,
-		"randf bad base": `math.randf("bad")`,
+		"randf two args":  `math.randf(32, 64)`,
+		"randi bad base":  `math.randi("bad")`,
+		"randf bad base":  `math.randf("bad")`,
 		"randui bad base": `math.randui("bad")`,
-		"randi bad arg": `math.randi("bad", 10)`,
+		"randi bad arg":   `math.randi("bad", 10)`,
 	}
 
 	for k, src := range tests {

@@ -1,6 +1,7 @@
 package functions
 
 import (
+	"math"
 	"math/rand"
 
 	"github.com/google/cel-go/cel"
@@ -9,6 +10,45 @@ import (
 	"github.com/google/cel-go/common/types/ref"
 	"github.com/iotxfoundry/cel-go/overloads"
 )
+
+// randIntByBase returns a random non-negative int64 of bit width base
+// (32 or 64): [0, MaxInt32] for 32 and [0, MaxInt64] for 64. Any other base
+// yields a CEL "base out of size" error.
+//
+// int64(base) wraps for uint arguments above 2^63, which then fail the base
+// switch and surface the error path, mirroring the previous switch semantics.
+func randIntByBase(base int64) ref.Val {
+	switch base {
+	case 32:
+		return types.Int(rand.Int31())
+	case 64:
+		return types.Int(rand.Int63())
+	default:
+		return types.NewErr("base '%d' out of int32, int64 size", base)
+	}
+}
+
+// randIntBounded returns a random int64 in [0, n) of bit width base (32 or
+// 64). Domain violations produce CEL errors instead of math/rand panics:
+// n must be positive, and for base 32 it must also fit int32. Bound values
+// wider than int64 (uint or double arguments) wrap in two's complement and
+// are rejected by the positivity check.
+func randIntBounded(base, n int64) ref.Val {
+	switch base {
+	case 32:
+		if n <= 0 || n > math.MaxInt32 {
+			return types.NewErr("bound '%d' out of int32 size", n)
+		}
+		return types.Int(rand.Int31n(int32(n)))
+	case 64:
+		if n <= 0 {
+			return types.NewErr("bound '%d' out of int64 size", n)
+		}
+		return types.Int(rand.Int63n(n))
+	default:
+		return types.NewErr("base '%d' out of int32, int64 size", base)
+	}
+}
 
 // randFunctions math rand functions
 //
@@ -186,16 +226,7 @@ var randFunctions = []cel.EnvOption{
 					if !ok {
 						return types.ValOrErr(value, "no such overload")
 					}
-					var ret ref.Val
-					switch base {
-					case 32:
-						ret = types.Int(rand.Int31())
-					case 64:
-						ret = types.Int(rand.Int63())
-					default:
-						return types.NewErr("base '%d' out of int32, int64 size", base)
-					}
-					return ret
+					return randIntByBase(int64(base))
 				},
 			),
 		),
@@ -218,16 +249,7 @@ var randFunctions = []cel.EnvOption{
 					if !ok {
 						return types.ValOrErr(rhs, "no such overload")
 					}
-					var ret ref.Val
-					switch base {
-					case 32:
-						ret = types.Int(rand.Int31n(int32(n)))
-					case 64:
-						ret = types.Int(rand.Int63n(int64(n)))
-					default:
-						return types.NewErr("base '%d' out of int32, int64 size", base)
-					}
-					return ret
+					return randIntBounded(int64(base), int64(n))
 				},
 			),
 		),
@@ -250,16 +272,7 @@ var randFunctions = []cel.EnvOption{
 					if !ok {
 						return types.ValOrErr(rhs, "no such overload")
 					}
-					var ret ref.Val
-					switch base {
-					case 32:
-						ret = types.Int(rand.Int31n(int32(n)))
-					case 64:
-						ret = types.Int(rand.Int63n(int64(n)))
-					default:
-						return types.NewErr("base '%d' out of int32, int64 size", base)
-					}
-					return ret
+					return randIntBounded(int64(base), int64(n))
 				},
 			),
 		),
@@ -282,16 +295,7 @@ var randFunctions = []cel.EnvOption{
 					if !ok {
 						return types.ValOrErr(rhs, "no such overload")
 					}
-					var ret ref.Val
-					switch base {
-					case 32:
-						ret = types.Int(rand.Int31n(int32(n)))
-					case 64:
-						ret = types.Int(rand.Int63n(int64(n)))
-					default:
-						return types.NewErr("base '%d' out of int32, int64 size", base)
-					}
-					return ret
+					return randIntBounded(int64(base), int64(n))
 				},
 			),
 		),
@@ -310,16 +314,7 @@ var randFunctions = []cel.EnvOption{
 					if !ok {
 						return types.ValOrErr(value, "no such overload")
 					}
-					var ret ref.Val
-					switch base {
-					case 32:
-						ret = types.Int(rand.Int31())
-					case 64:
-						ret = types.Int(rand.Int63())
-					default:
-						return types.NewErr("base '%d' out of int32, int64 size", base)
-					}
-					return ret
+					return randIntByBase(int64(base))
 				},
 			),
 		),
@@ -343,16 +338,7 @@ var randFunctions = []cel.EnvOption{
 					if !ok {
 						return types.ValOrErr(rhs, "no such overload")
 					}
-					var ret ref.Val
-					switch base {
-					case 32:
-						ret = types.Int(rand.Int31n(int32(n)))
-					case 64:
-						ret = types.Int(rand.Int63n(int64(n)))
-					default:
-						return types.NewErr("base '%d' out of int32, int64 size", base)
-					}
-					return ret
+					return randIntBounded(int64(base), int64(n))
 				},
 			),
 		),
@@ -375,16 +361,7 @@ var randFunctions = []cel.EnvOption{
 					if !ok {
 						return types.ValOrErr(rhs, "no such overload")
 					}
-					var ret ref.Val
-					switch base {
-					case 32:
-						ret = types.Int(rand.Int31n(int32(n)))
-					case 64:
-						ret = types.Int(rand.Int63n(int64(n)))
-					default:
-						return types.NewErr("base '%d' out of int32, int64 size", base)
-					}
-					return ret
+					return randIntBounded(int64(base), int64(n))
 				},
 			),
 		),
@@ -407,16 +384,7 @@ var randFunctions = []cel.EnvOption{
 					if !ok {
 						return types.ValOrErr(rhs, "no such overload")
 					}
-					var ret ref.Val
-					switch base {
-					case 32:
-						ret = types.Int(rand.Int31n(int32(n)))
-					case 64:
-						ret = types.Int(rand.Int63n(int64(n)))
-					default:
-						return types.NewErr("base '%d' out of int32, int64 size", base)
-					}
-					return ret
+					return randIntBounded(int64(base), int64(n))
 				},
 			),
 		),
@@ -436,16 +404,7 @@ var randFunctions = []cel.EnvOption{
 					if !ok {
 						return types.ValOrErr(value, "no such overload")
 					}
-					var ret ref.Val
-					switch int(base) {
-					case 32:
-						ret = types.Int(rand.Int31())
-					case 64:
-						ret = types.Int(rand.Int63())
-					default:
-						return types.NewErr("base '%d' out of int32, int64 size", int(base))
-					}
-					return ret
+					return randIntByBase(int64(base))
 				},
 			),
 		),
@@ -469,16 +428,7 @@ var randFunctions = []cel.EnvOption{
 					if !ok {
 						return types.ValOrErr(rhs, "no such overload")
 					}
-					var ret ref.Val
-					switch base {
-					case 32:
-						ret = types.Int(rand.Int31n(int32(n)))
-					case 64:
-						ret = types.Int(rand.Int63n(int64(n)))
-					default:
-						return types.NewErr("base '%d' out of int32, int64 size", int(base))
-					}
-					return ret
+					return randIntBounded(int64(base), int64(n))
 				},
 			),
 		),
@@ -501,16 +451,7 @@ var randFunctions = []cel.EnvOption{
 					if !ok {
 						return types.ValOrErr(rhs, "no such overload")
 					}
-					var ret ref.Val
-					switch base {
-					case 32:
-						ret = types.Int(rand.Int31n(int32(n)))
-					case 64:
-						ret = types.Int(rand.Int63n(int64(n)))
-					default:
-						return types.NewErr("base '%d' out of int32, int64 size", int(base))
-					}
-					return ret
+					return randIntBounded(int64(base), int64(n))
 				},
 			),
 		),
@@ -533,16 +474,7 @@ var randFunctions = []cel.EnvOption{
 					if !ok {
 						return types.ValOrErr(rhs, "no such overload")
 					}
-					var ret ref.Val
-					switch base {
-					case 32:
-						ret = types.Int(rand.Int31n(int32(n)))
-					case 64:
-						ret = types.Int(rand.Int63n(int64(n)))
-					default:
-						return types.NewErr("base '%d' out of int32, int64 size", int(base))
-					}
-					return ret
+					return randIntBounded(int64(base), int64(n))
 				},
 			),
 		),

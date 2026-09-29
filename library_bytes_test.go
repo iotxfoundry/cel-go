@@ -547,6 +547,48 @@ func TestBytes(tt *testing.T) {
 			source: `buff.bitwise_not()`,
 			result: []byte{0xFF, 0x00},
 		},
+		// big-endian whole-byte shifts (|shift| >= 8)
+		`buff.bitwise_shr(8)`: {
+			buff:   []byte{0xFF, 0xFF},
+			source: `buff.bitwise_shr(8)`,
+			result: []byte{0x00, 0xFF},
+		},
+		`buff.bitwise_shr(9)`: {
+			buff:   []byte{0xFF, 0xFF},
+			source: `buff.bitwise_shr(9)`,
+			result: []byte{0x00, 0x7F},
+		},
+		`buff.bitwise_shr(16)`: {
+			buff:   []byte{0xFF, 0xFF},
+			source: `buff.bitwise_shr(16)`,
+			result: []byte{0x00, 0x00},
+		},
+		`buff.bitwise_shl(8)`: {
+			buff:   []byte{0xFF, 0xFF},
+			source: `buff.bitwise_shl(8)`,
+			result: []byte{0xFF, 0x00},
+		},
+		`buff.bitwise_shl(9)`: {
+			buff:   []byte{0xFF, 0xFF},
+			source: `buff.bitwise_shl(9)`,
+			result: []byte{0xFE, 0x00},
+		},
+		`buff.bitwise_shr(-8)`: {
+			buff:   []byte{0x00, 0xFF},
+			source: `buff.bitwise_shr(-8)`,
+			result: []byte{0xFF, 0x00},
+		},
+		// MinInt64 shift magnitude must not panic; every bit shifts out.
+		`buff.bitwise_shr_minint`: {
+			buff:   []byte{0xFF, 0xFF},
+			source: `buff.bitwise_shr(-9223372036854775808)`,
+			result: []byte{0x00, 0x00},
+		},
+		`buff.bitwise_shl_minint`: {
+			buff:   []byte{0xFF, 0xFF},
+			source: `buff.bitwise_shl(-9223372036854775808)`,
+			result: []byte{0x00, 0x00},
+		},
 	}
 
 	env, err := cel.NewEnv(

@@ -1,7 +1,7 @@
 package functions
 
 import (
-	"math/bits"
+	"math"
 
 	"github.com/google/cel-go/cel"
 	"github.com/google/cel-go/common/types"
@@ -154,10 +154,19 @@ var bitwiseUintFunctions = []cel.EnvOption{
 					if !ok {
 						return types.ValOrErr(rhs, "no such overload")
 					}
-					if r < 0 {
-						return l << types.Uint(-r)
+					// Normalize the shift magnitude before negating: negating
+					// MinInt64 would overflow back to a negative count and
+					// panic. MaxInt64 behaves identically (a full-width shift).
+					mag := r
+					if mag == math.MinInt64 {
+						mag = math.MaxInt64
+					} else if mag < 0 {
+						mag = -mag
 					}
-					return l >> types.Uint(r)
+					if r < 0 {
+						return l << types.Uint(mag)
+					}
+					return l >> types.Uint(mag)
 				},
 			),
 		),
@@ -187,10 +196,19 @@ var bitwiseUintFunctions = []cel.EnvOption{
 					if !ok {
 						return types.ValOrErr(rhs, "no such overload")
 					}
-					if r < 0 {
-						return l >> types.Uint(-r)
+					// Normalize the shift magnitude before negating: negating
+					// MinInt64 would overflow back to a negative count and
+					// panic. MaxInt64 behaves identically (a full-width shift).
+					mag := r
+					if mag == math.MinInt64 {
+						mag = math.MaxInt64
+					} else if mag < 0 {
+						mag = -mag
 					}
-					return l << types.Uint(r)
+					if r < 0 {
+						return l >> types.Uint(mag)
+					}
+					return l << types.Uint(mag)
 				},
 			),
 		),
@@ -247,8 +265,10 @@ var bitwiseUintFunctions = []cel.EnvOption{
 					if !ok {
 						return types.ValOrErr(rhs, "no such overload")
 					}
-					if int(index) >= bits.UintSize || int(index) < 0 {
-						return types.NewErr("index '%d' out of range in uint size '%d'", index, bits.UintSize)
+					// uint64 is always 64 bits wide, independent of the
+					// platform's native int size.
+					if index < 0 || index >= 64 {
+						return types.NewErr("index '%d' out of range in uint size '%d'", index, 64)
 					}
 					return types.Bytes{byte((uint64(v) >> uint64(index)) & 1)}
 				},
