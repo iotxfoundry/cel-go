@@ -175,6 +175,7 @@ Functions and macros from the CEL standard library and the official `ext.*` pack
 |`int`|uint64_to_int64|(uint) -> int|int(123u) // 123|
 |`join`|list_join|(list) -> string||
 |`join`|list_join_string|(list,string) -> string||
+|`json.encode`|json_encode_dyn|(dyn) -> string||
 |`last`|list_last|(list) -> optional_type(\<V\>)|[].last() // optional.none()<br>[1, 2, 3].last() ? optional.of(3)|
 |`lastIndexOf`|string_last_index_of_string|(string,string) -> int||
 |`lastIndexOf`|string_last_index_of_string_int|(string,string,int) -> int||
